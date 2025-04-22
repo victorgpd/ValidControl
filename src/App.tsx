@@ -1,7 +1,7 @@
 function App() {
   return (
     <div>
-      <h1>Git</h1>
+      <h1>Curso Git e Github</h1>
       <p>React</p>
     </div>
   );
