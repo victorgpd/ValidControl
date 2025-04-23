@@ -1,10 +1,19 @@
+import { createBrowserRouter, RouteObject, RouterProvider } from "react-router-dom";
+import { loggedScreensRoutes, screensRoutes } from "./routes/routes";
+
 function App() {
+  const routes: RouteObject[] = [...screensRoutes];
+  const routesLoggedIn: RouteObject[] = [...loggedScreensRoutes].map((route) => ({
+    ...route,
+    // loader: verifyLoggedIn,
+  }));
+
+  const router = createBrowserRouter([...routes, ...routesLoggedIn]);
+
   return (
-    <div>
-      <h1>Curso Git e Github</h1>
-      <p>React</p>
-      <p>JavaScript</p>
-    </div>
+    <>
+      <RouterProvider router={router} />
+    </>
   );
 }
 
