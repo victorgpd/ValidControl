@@ -13,7 +13,7 @@ export const RegisterContainer = styled.div`
   width: 100%;
   max-width: 795px;
   height: 100%;
-  max-height: 276px;
+  max-height: 290px;
 
   overflow: hidden;
   border-radius: 10px;
@@ -52,7 +52,7 @@ export const RegisterContent = styled.div`
   width: 100%;
   max-width: 380px;
   height: 100%;
-  padding: 20px;
+  padding: 10px 20px;
   background-color: #fff;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 

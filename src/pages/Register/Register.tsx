@@ -3,7 +3,7 @@ import Screen from "../../components/Screen/Screen";
 
 import useAuthentication from "../../hooks/useAuthentication";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Input } from "antd";
 import { UserType } from "../../types/types";
 import { useNavigate } from "react-router-dom";
@@ -19,7 +19,12 @@ const Register = () => {
     password: "",
   });
 
-  const { register: RegisterFirebase, loading } = useAuthentication();
+  const { register: RegisterFirebase, watchAuthState, loading } = useAuthentication();
+
+  useEffect(() => {
+    const unsubscribe = watchAuthState(navigate);
+    return () => unsubscribe();
+  }, []);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRegister({ ...register, [event.target.name]: event.target.value });

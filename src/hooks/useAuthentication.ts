@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { app } from "../firebase/config";
-import { AuthError, createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, signOut, updateProfile } from "firebase/auth";
+import { AuthError, createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from "firebase/auth";
 import { useAppDispatch } from "./store";
 import { setUser } from "../redux/globalReducer/slice";
 import { useNotification } from "./useNotification";
 import { UserType } from "../types/types";
+import { redirect } from "react-router-dom";
 
 const useAuthentication = () => {
   const dispatch = useAppDispatch();
@@ -16,14 +17,8 @@ const useAuthentication = () => {
 
   const auth = getAuth(app);
 
-  function checkIfIsCancelled() {
-    if (cancelled) {
-      return;
-    }
-  }
-
   const login = async (email: string, password: string) => {
-    checkIfIsCancelled();
+    if (cancelled) return;
 
     setLoading(true);
     setError(null);
@@ -39,17 +34,24 @@ const useAuthentication = () => {
     } catch (erro: AuthError | any) {
       let systemErrorMessage: string;
 
-      if (erro.message.includes("user-not-found")) {
-        systemErrorMessage = "Usuário não encontrado.";
-      } else if (erro.message.includes("auth/invalid-email")) {
-        systemErrorMessage = "Email inválido.";
-      } else if (erro.message.includes("auth/invalid-credential")) {
-        systemErrorMessage = "Usuário não encontrado ou senha incorreta.";
-      } else {
-        systemErrorMessage = "Ocorreu um erro, por favor tente novamente mais tarde.";
+      switch (erro.code) {
+        case "auth/user-not-found":
+          systemErrorMessage = "Usuário não encontrado.";
+          break;
+        case "auth/invalid-email":
+          systemErrorMessage = "Email inválido.";
+          break;
+        case "auth/wrong-password":
+          systemErrorMessage = "Senha incorreta.";
+          break;
+        case "auth/invalid-credential":
+          systemErrorMessage = "Usuário ou senha incorretos.";
+          break;
+        default:
+          systemErrorMessage = "Ocorreu um erro, por favor tente novamente mais tarde.";
       }
 
-      showNotification("error", "Erro", `${systemErrorMessage}`);
+      showNotification("error", "Erro", systemErrorMessage);
       setError(systemErrorMessage);
       return false;
     } finally {
@@ -58,13 +60,14 @@ const useAuthentication = () => {
   };
 
   const logout = () => {
-    checkIfIsCancelled();
+    if (cancelled) return;
 
     signOut(auth);
+    dispatch(setUser({ name: null, email: null, uid: null }));
   };
 
   const register = async (user: UserType) => {
-    checkIfIsCancelled();
+    if (cancelled) return;
 
     setLoading(true);
 
@@ -90,12 +93,53 @@ const useAuthentication = () => {
         systemErrorMessage = "Ocorreu um erro, por favor tente novamente mais tarde.";
       }
 
-      showNotification("error", "Erro", `${systemErrorMessage}`);
+      showNotification("error", "Erro", systemErrorMessage);
       setError(systemErrorMessage);
       return false;
     } finally {
       setLoading(false);
     }
+  };
+
+  const watchAuthState = (navigate?: (path: string) => void) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        dispatch(setUser({ name: user.displayName, email: user.email, uid: user.uid }));
+        if (navigate) navigate("/");
+      } else {
+        dispatch(setUser({ name: null, email: null, uid: null }));
+      }
+    });
+
+    return unsubscribe;
+  };
+
+  const verifyLoggedIn = () => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        dispatch(setUser({ name: user.displayName, email: user.email, uid: user.uid }));
+        return null;
+      } else {
+        dispatch(setUser({ name: null, email: null, uid: null }));
+        return redirect("/login");
+      }
+    });
+
+    return null;
+  };
+
+  const verifyLogged = () => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        dispatch(setUser({ name: user.displayName, email: user.email, uid: user.uid }));
+        return null;
+      } else {
+        dispatch(setUser({ name: null, email: null, uid: null }));
+        return null;
+      }
+    });
+
+    return null;
   };
 
   useEffect(() => {
@@ -106,6 +150,9 @@ const useAuthentication = () => {
     login,
     logout,
     register,
+    verifyLogged,
+    verifyLoggedIn,
+    watchAuthState,
 
     error,
     loading,
