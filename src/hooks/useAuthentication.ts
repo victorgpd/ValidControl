@@ -14,6 +14,7 @@ const useAuthentication = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [cancelled, setCancelled] = useState(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
   const auth = getAuth(app);
 
@@ -115,12 +116,15 @@ const useAuthentication = () => {
   };
 
   const verifyLoggedIn = () => {
+    setIsCheckingAuth(true);
     onAuthStateChanged(auth, (user) => {
       if (user) {
         dispatch(setUser({ name: user.displayName, email: user.email, uid: user.uid }));
+        setIsCheckingAuth(false);
         return null;
       } else {
         dispatch(setUser({ name: null, email: null, uid: null }));
+        setIsCheckingAuth(false);
         return redirect("/login");
       }
     });
@@ -129,14 +133,14 @@ const useAuthentication = () => {
   };
 
   const verifyLogged = () => {
+    setIsCheckingAuth(true);
     onAuthStateChanged(auth, (user) => {
       if (user) {
         dispatch(setUser({ name: user.displayName, email: user.email, uid: user.uid }));
-        return null;
       } else {
         dispatch(setUser({ name: null, email: null, uid: null }));
-        return null;
       }
+      setIsCheckingAuth(false);
     });
 
     return null;
@@ -156,6 +160,7 @@ const useAuthentication = () => {
 
     error,
     loading,
+    isCheckingAuth,
   };
 };
 

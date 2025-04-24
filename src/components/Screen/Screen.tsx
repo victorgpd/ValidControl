@@ -41,7 +41,7 @@ const Screen = ({ children }: ScreenProps) => {
   const location = useLocation();
 
   const { contextHolder } = useNotification();
-  const { logout, verifyLogged } = useAuthentication();
+  const { logout, verifyLogged, isCheckingAuth } = useAuthentication();
   const { user } = useAppSelector((state) => state.globalReducer);
 
   const items: MenuProps["items"] = [
@@ -75,9 +75,7 @@ const Screen = ({ children }: ScreenProps) => {
   ];
 
   useEffect(() => {
-    if (!user?.uid) {
-      verifyLogged();
-    }
+    verifyLogged();
   }, []);
 
   return (
@@ -95,7 +93,7 @@ const Screen = ({ children }: ScreenProps) => {
         )}
 
         <UserMenuContainer>
-          {user?.uid ? (
+          {isCheckingAuth ? null : user?.uid ? (
             <MenuUser menu={{ items }} placement="bottomRight" arrow>
               <UserButton>
                 <UserOutlined style={{ fontSize: "24px", color: "white" }} />
