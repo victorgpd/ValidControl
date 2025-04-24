@@ -1,9 +1,11 @@
+import Screen from "../../components/Screen/Screen";
+
 const Home = () => {
   return (
-    <div>
+    <Screen>
       <h1>Home</h1>
-    </div>
-  )
-}
+    </Screen>
+  );
+};
 
-export default Home
+export default Home;
