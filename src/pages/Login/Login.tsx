@@ -1,19 +1,34 @@
 import ImageLogin from "../../images/login.png";
 import Screen from "../../components/Screen/Screen";
 
+import useAuthentication from "../../hooks/useAuthentication";
+
+import { useState } from "react";
 import { Button, Input } from "antd";
+import { UserType } from "../../types/types";
+import { useNavigate } from "react-router-dom";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Image, ImageContainer, LoginContainer, LoginContent, LoginForm, LoginPage, LoginTitle } from "./styles";
-import { useState } from "react";
 
 const Login = () => {
-  const [login, setLogin] = useState({
+  const navigate = useNavigate();
+
+  const [login, setLogin] = useState<UserType>({
     email: "",
     password: "",
   });
 
+  const { login: loginFirebase, loading } = useAuthentication();
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setLogin({ ...login, [event.target.name]: event.target.value });
+  };
+
+  const handleLogin = async () => {
+    const success = await loginFirebase(login.email, login.password);
+    if (success) {
+      navigate("/");
+    }
   };
 
   return (
@@ -41,7 +56,7 @@ const Login = () => {
                 onChange={handleChange}
               />
 
-              <Button color="cyan" variant="solid">
+              <Button color="cyan" onClick={handleLogin} loading={loading} variant="solid">
                 Entrar
               </Button>
             </LoginForm>

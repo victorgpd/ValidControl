@@ -4,6 +4,7 @@ import { MenuProps } from "antd";
 import { useLocation } from "react-router-dom";
 import { UserOutlined } from "@ant-design/icons";
 import { HeaderContainer, LogoContainer, LogoImage, ButtonsContainer, AnchorMenu, UserMenuContainer, UserButton, MenuUser, MainContainer } from "./styles";
+import { useNotification } from "../../hooks/useNotification";
 
 interface ScreenProps {
   children?: React.ReactNode;
@@ -62,9 +63,11 @@ const items: MenuProps["items"] = [
 
 const Screen = ({ children }: ScreenProps) => {
   const location = useLocation();
+  const { contextHolder } = useNotification();
 
   return (
     <>
+      {contextHolder}
       <HeaderContainer>
         <LogoContainer>
           <LogoImage src={Logo} alt="Logo" />

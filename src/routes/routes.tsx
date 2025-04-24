@@ -3,6 +3,7 @@ import { RouteObject } from "react-router-dom";
 
 import Home from "../pages/Home/Home";
 import Login from "../pages/Login/Login";
+import Register from "../pages/Register/Register";
 
 export const screensRoutes: RouteObject[] = [
   {
@@ -10,11 +11,14 @@ export const screensRoutes: RouteObject[] = [
     element: <Home />,
     errorElement: <div>404</div>, //<PageNotFound />,
   },
-];
-
-export const loggedScreensRoutes: RouteObject[] = [
   {
     path: RoutesEnum.Login,
     element: <Login />,
   },
+  {
+    path: RoutesEnum.Register,
+    element: <Register />,
+  },
 ];
+
+export const loggedScreensRoutes: RouteObject[] = [];
