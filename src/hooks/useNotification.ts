@@ -10,6 +10,8 @@ export const useNotification = () => {
         message,
         description,
         placement: "topRight",
+        duration: 5,
+        showProgress: true,
       });
     },
     [api]
