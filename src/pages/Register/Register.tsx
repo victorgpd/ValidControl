@@ -5,15 +5,15 @@ import useAuthentication from "../../hooks/useAuthentication";
 
 import { useEffect, useState } from "react";
 import { Button, Input } from "antd";
-import { UserType } from "../../types/types";
 import { useNavigate } from "react-router-dom";
-import { LockOutlined, UserOutlined } from "@ant-design/icons";
+import { LockOutlined, ShopOutlined, UserOutlined } from "@ant-design/icons";
 import { Image, ImageContainer, RegisterContainer, RegisterContent, RegisterForm, RegisterPage, RegisterTitle } from "./styles";
 
 const Register = () => {
   const navigate = useNavigate();
 
-  const [register, setRegister] = useState<UserType>({
+  const [register, setRegister] = useState({
+    nameStore: "",
     name: "",
     email: "",
     password: "",
@@ -48,6 +48,17 @@ const Register = () => {
           <RegisterContent>
             <RegisterTitle>Cadastrar-se</RegisterTitle>
             <RegisterForm>
+              <Input
+                variant="underlined"
+                prefix={<ShopOutlined />}
+                style={{ fontSize: "15px" }}
+                type="name"
+                id="nameStore"
+                name="nameStore"
+                placeholder="Nome da loja"
+                value={register.nameStore}
+                onChange={handleChange}
+              />
               <Input variant="underlined" prefix={<UserOutlined />} style={{ fontSize: "15px" }} type="name" id="name" name="name" placeholder="Nome" value={register.name} onChange={handleChange} />
               <Input
                 variant="underlined"

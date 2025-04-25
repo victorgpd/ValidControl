@@ -11,9 +11,9 @@ export const RegisterPage = styled.div`
 
 export const RegisterContainer = styled.div`
   width: 100%;
-  max-width: 795px;
+  max-width: 820px;
   height: 100%;
-  max-height: 290px;
+  max-height: 344px;
 
   overflow: hidden;
   border-radius: 10px;
@@ -32,14 +32,14 @@ export const RegisterContainer = styled.div`
 
   @media (max-width: 900px) {
     max-width: 380px;
-    max-height: 560px;
+    max-height: 614px;
     flex-flow: column;
   }
 `;
 
 export const ImageContainer = styled.div`
   width: 100%;
-  max-width: 415px;
+  max-width: 445px;
   height: 100%;
 `;
 

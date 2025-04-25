@@ -2,14 +2,16 @@ import Logo from "../../images/logo.png";
 
 import { Button, MenuProps } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
-import { LogoutOutlined, SettingOutlined, UserOutlined } from "@ant-design/icons";
-import { HeaderContainer, LogoContainer, LogoImage, ButtonsContainer, AnchorMenu, UserMenuContainer, UserButton, MenuUser, MainContainer } from "./styles";
+import { CloseOutlined, LogoutOutlined, MenuOutlined, PieChartOutlined, SettingOutlined, UserOutlined } from "@ant-design/icons";
+import { HeaderContainer, LogoContainer, LogoImage, ButtonsContainer, AnchorMenu, UserMenuContainer, UserButton, MenuUser, MainContainer, ButtonMenu } from "./styles";
 import { useNotification } from "../../hooks/useNotification";
 import { useAppSelector } from "../../hooks/store";
 import useAuthentication from "../../hooks/useAuthentication";
 import { useEffect } from "react";
 
 interface ScreenProps {
+  displayMenu?: () => void;
+  isVisible?: boolean;
   children?: React.ReactNode;
 }
 
@@ -36,7 +38,7 @@ const itemsAnchor = [
   },
 ];
 
-const Screen = ({ children }: ScreenProps) => {
+const Screen = ({ displayMenu, isVisible, children }: ScreenProps) => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -54,11 +56,17 @@ const Screen = ({ children }: ScreenProps) => {
     },
     {
       key: "2",
+      label: "Painel",
+      icon: <PieChartOutlined />,
+      onClick: () => navigate("/painel/dashboard"),
+    },
+    {
+      key: "3",
       label: "Perfil",
       icon: <UserOutlined />,
     },
     {
-      key: "3",
+      key: "4",
       label: "Configurações",
       icon: <SettingOutlined />,
     },
@@ -66,11 +74,11 @@ const Screen = ({ children }: ScreenProps) => {
       type: "divider",
     },
     {
-      key: "4",
+      key: "5",
       danger: true,
       label: "Sair",
       icon: <LogoutOutlined />,
-      onClick: logout,
+      onClick: handleLogout,
     },
   ];
 
@@ -78,11 +86,17 @@ const Screen = ({ children }: ScreenProps) => {
     verifyLogged();
   }, []);
 
+  function handleLogout() {
+    logout();
+    navigate("/login");
+  }
+
   return (
     <>
       {contextHolder}
       <HeaderContainer>
         <LogoContainer>
+          <ButtonMenu onClick={displayMenu}>{isVisible ? <CloseOutlined /> : <MenuOutlined />}</ButtonMenu>
           <LogoImage src={Logo} alt="Logo" />
         </LogoContainer>
 
@@ -102,7 +116,7 @@ const Screen = ({ children }: ScreenProps) => {
           ) : (
             <>
               <Button color="cyan" onClick={() => navigate("/login")} variant="text">
-                Entrar
+                Acessar
               </Button>
 
               <Button color="cyan" onClick={() => navigate("/register")} variant="text">

@@ -6,6 +6,7 @@ export const HeaderContainer = styled.header`
   height: 62px;
   padding: 10px 15px;
   background-color: #2f2f2f;
+  border-bottom: 1px solid rgba(222, 224, 224, 0.5);
 
   gap: 15px;
   display: flex;
@@ -13,14 +14,32 @@ export const HeaderContainer = styled.header`
   justify-content: space-between;
 
   position: fixed;
+
+  z-index: 999;
 `;
 
 export const LogoContainer = styled.div`
   height: 100%;
+
+  gap: 10px;
+  display: flex;
+  align-items: center;
 `;
 
 export const LogoImage = styled.img`
   height: 100%;
+`;
+
+export const ButtonMenu = styled.button`
+  cursor: pointer;
+  color: white;
+  height: 100%;
+  font-size: larger;
+  display: none;
+
+  @media screen and (max-width: 920px) {
+    display: inline-block;
+  }
 `;
 
 export const ButtonsContainer = styled.ul`

@@ -6,9 +6,13 @@ import { setUser } from "../redux/globalReducer/slice";
 import { useNotification } from "./useNotification";
 import { UserType } from "../types/types";
 import { redirect } from "react-router-dom";
+import { useDocument } from "./useDocument";
+import { Timestamp } from "firebase/firestore";
 
 const useAuthentication = () => {
   const dispatch = useAppDispatch();
+
+  const { insertDocument } = useDocument("lojas");
   const { showNotification } = useNotification();
 
   const [error, setError] = useState<string | null>(null);
@@ -63,8 +67,8 @@ const useAuthentication = () => {
   const logout = () => {
     if (cancelled) return;
 
-    signOut(auth);
     dispatch(setUser({ name: null, email: null, uid: null }));
+    signOut(auth);
   };
 
   const register = async (user: UserType) => {
@@ -79,7 +83,19 @@ const useAuthentication = () => {
         displayName: user.name,
       });
 
+      await insertDocument({
+        store: user.nameStore,
+        name: user.name,
+        uid: data.uid,
+        createdAt: Timestamp.now(),
+        createdBy: user.email,
+        products: [],
+        validitys: [],
+        access: [user.email],
+      });
+
       dispatch(setUser({ name: data.displayName, email: data.email, uid: data.uid }));
+
       showNotification("success", "Sucesso", "Cadastro realizado com sucesso.");
 
       return true;
@@ -115,21 +131,19 @@ const useAuthentication = () => {
     return unsubscribe;
   };
 
-  const verifyLoggedIn = () => {
-    setIsCheckingAuth(true);
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        dispatch(setUser({ name: user.displayName, email: user.email, uid: user.uid }));
-        setIsCheckingAuth(false);
-        return null;
-      } else {
-        dispatch(setUser({ name: null, email: null, uid: null }));
-        setIsCheckingAuth(false);
-        return redirect("/login");
-      }
+  const verifyLoggedIn = async () => {
+    return new Promise((resolve) => {
+      const unsubscribe = onAuthStateChanged(auth, (user) => {
+        unsubscribe(); // evitar múltiplas chamadas
+        if (user) {
+          dispatch(setUser({ name: user.displayName, email: user.email, uid: user.uid }));
+          resolve(null); // deixa o loader continuar
+        } else {
+          dispatch(setUser({ name: null, email: null, uid: null }));
+          resolve(redirect("/login")); // redireciona
+        }
+      });
     });
-
-    return null;
   };
 
   const verifyLogged = () => {
