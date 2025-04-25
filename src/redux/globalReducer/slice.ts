@@ -1,8 +1,14 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { NotificationType, UserLoggedType } from "../../types/types";
 
-const initialState: { user: UserLoggedType | null; notification: NotificationType | null } = {
+interface initialStateType {
+  user: UserLoggedType | null;
+  openCurrentMenu: string[];
+  notification: NotificationType | null;
+}
+const initialState: initialStateType = {
   user: null,
+  openCurrentMenu: ["dashboard"],
   notification: null,
 };
 
@@ -13,6 +19,9 @@ const globalSlice = createSlice({
     setUser: (state, action: PayloadAction<UserLoggedType>) => {
       state.user = action.payload;
     },
+    setOpenCurrentMenu: (state, action: PayloadAction<string[]>) => {
+      state.openCurrentMenu = action.payload;
+    },
     setNotification: (state, action: PayloadAction<NotificationType | null>) => {
       state.notification = action.payload;
     },
@@ -20,4 +29,4 @@ const globalSlice = createSlice({
 });
 
 export const globalReducer = globalSlice.reducer;
-export const { setUser, setNotification } = globalSlice.actions;
+export const { setUser, setOpenCurrentMenu, setNotification } = globalSlice.actions;

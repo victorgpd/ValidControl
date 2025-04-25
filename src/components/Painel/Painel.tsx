@@ -3,11 +3,12 @@ import useAuthentication from "../../hooks/useAuthentication";
 
 import { MenuProps } from "antd";
 import { useNavigate } from "react-router-dom";
-import { useAppSelector } from "../../hooks/store";
+import { useAppDispatch, useAppSelector } from "../../hooks/store";
 import { useEffect, useMemo, useState } from "react";
 import { Info, InfoContainer, MenuContainer, MenuList, PainelContainer } from "./styles";
 import { CalendarOutlined, DatabaseOutlined, LogoutOutlined, PieChartOutlined, SettingOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import { RoutesEnum } from "../../enums/routes";
+import { setOpenCurrentMenu } from "../../redux/globalReducer/slice";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -17,10 +18,13 @@ interface PainelProps {
 
 const Painel = ({ children }: PainelProps) => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  const { openCurrentMenu } = useAppSelector((state) => state.globalReducer);
 
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
-  const [openCurrent, setOpenCurrent] = useState<string[]>(["dashboard"]);
+  const [openCurrent] = useState<string[]>(openCurrentMenu);
 
   const { logout } = useAuthentication();
   const { user } = useAppSelector((state) => state.globalReducer);
@@ -100,7 +104,7 @@ const Painel = ({ children }: PainelProps) => {
   }
 
   const handleClickMenu: MenuProps["onClick"] = (e) => {
-    setOpenCurrent(e.keyPath);
+    dispatch(setOpenCurrentMenu(e.keyPath));
   };
 
   const handleDisplayMenu = () => {
