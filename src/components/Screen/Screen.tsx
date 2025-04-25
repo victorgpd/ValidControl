@@ -230,7 +230,6 @@ const Screen = ({ displayMenu, isVisible, children }: ScreenProps) => {
 
   return (
     <>
-      {contextHolder}
       <HeaderContainer>
         <LogoContainer>
           {location.pathname.includes("/painel") && (
@@ -283,7 +282,10 @@ const Screen = ({ displayMenu, isVisible, children }: ScreenProps) => {
         </MenuContainer>
       </HeaderContainer>
 
-      <MainContainer>{children}</MainContainer>
+      <MainContainer>
+        {contextHolder}
+        {children}
+      </MainContainer>
     </>
   );
 };
