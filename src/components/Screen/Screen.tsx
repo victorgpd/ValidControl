@@ -1,19 +1,49 @@
 import Logo from "../../images/logo.png";
 
 import { Button, MenuProps } from "antd";
-import { useLocation, useNavigate } from "react-router-dom";
-import { CloseOutlined, LogoutOutlined, MenuOutlined, PieChartOutlined, SettingOutlined, UserOutlined } from "@ant-design/icons";
-import { HeaderContainer, LogoContainer, LogoImage, ButtonsContainer, AnchorMenu, UserMenuContainer, UserButton, MenuUser, MainContainer, ButtonMenu } from "./styles";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import {
+  BarChartOutlined,
+  CloseOutlined,
+  HomeOutlined,
+  LoginOutlined,
+  LogoutOutlined,
+  MenuOutlined,
+  PieChartOutlined,
+  PlayCircleOutlined,
+  SettingOutlined,
+  StarOutlined,
+  UserAddOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
+import {
+  HeaderContainer,
+  LogoContainer,
+  LogoImage,
+  ButtonsContainer,
+  AnchorMenu,
+  UserMenuContainer,
+  UserButton,
+  MenuUser,
+  MainContainer,
+  ButtonMenu,
+  MenuContainer,
+  InfoContainer,
+  Info,
+  MenuList,
+} from "./styles";
 import { useNotification } from "../../hooks/useNotification";
 import { useAppSelector } from "../../hooks/store";
 import useAuthentication from "../../hooks/useAuthentication";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface ScreenProps {
   displayMenu?: () => void;
   isVisible?: boolean;
   children?: React.ReactNode;
 }
+
+type MenuItem = Required<MenuProps>["items"][number];
 
 const itemsAnchor = [
   {
@@ -43,10 +73,14 @@ const Screen = ({ displayMenu, isVisible, children }: ScreenProps) => {
   const location = useLocation();
 
   const { contextHolder } = useNotification();
-  const { logout, verifyLogged, isCheckingAuth } = useAuthentication();
   const { user } = useAppSelector((state) => state.globalReducer);
+  const { logout, verifyLogged, isCheckingAuth } = useAuthentication();
 
-  const items: MenuProps["items"] = [
+  const [message, setMessage] = useState<string>("");
+  const [openCurrent, setOpenCurrent] = useState<string[]>(["home"]);
+  const [menuHomeIsVisible, setMenuHomeIsVisible] = useState<boolean>(false);
+
+  const itemsUser: MenuProps["items"] = [
     {
       key: "1",
       label: `Olá, ${user?.name}`,
@@ -82,22 +116,135 @@ const Screen = ({ displayMenu, isVisible, children }: ScreenProps) => {
     },
   ];
 
+  const dynamicItems: MenuItem[] = [
+    {
+      key: "home",
+      icon: <HomeOutlined />,
+      label: "Home",
+      onClick: () => navigate("/"),
+    },
+    {
+      key: "overview",
+      icon: <BarChartOutlined />,
+      label: "Visão geral",
+      onClick: () => navigate("/#overview"),
+    },
+    {
+      key: "vantages",
+      icon: <StarOutlined />,
+      label: "Vantagens",
+      onClick: () => navigate("/#vantages"),
+    },
+    {
+      key: "use",
+      icon: <PlayCircleOutlined />,
+      label: "Como usar",
+      onClick: () => navigate("/#use"),
+    },
+    {
+      type: "divider",
+      style: { color: "white", backgroundColor: "white" },
+    },
+    ...(user?.name
+      ? [
+          {
+            key: "painel",
+            icon: <PieChartOutlined />,
+            label: "Painel",
+            onClick: () => navigate("/painel/dashboard"),
+          },
+          {
+            key: "profile",
+            icon: <UserOutlined />,
+            label: "Perfil",
+            onClick: () => navigate("/painel/dashboard"),
+          },
+          {
+            key: "configuration",
+            icon: <SettingOutlined />,
+            label: "Configurações",
+            onClick: () => navigate("/painel/dashboard"),
+          },
+          {
+            key: "logout",
+            icon: <LogoutOutlined />,
+            label: "Sair",
+            style: { color: "red" },
+            onClick: handleLogout,
+          },
+        ]
+      : [
+          {
+            key: "login",
+            icon: <LoginOutlined />,
+            label: "Login",
+            onClick: () => navigate("/login"),
+          },
+          {
+            key: "register",
+            icon: <UserAddOutlined />,
+            label: "Cadastro",
+            onClick: () => navigate("/register"),
+          },
+        ]),
+  ];
+
   useEffect(() => {
     verifyLogged();
   }, []);
+
+  useEffect(() => {
+    const hour = new Date().getHours();
+    let message = hour < 12 ? "Bom dia" : hour < 18 ? "Boa tarde" : "Boa noite";
+
+    if (user?.name) {
+      message += `, ${user.name.split(" ")[0]}`;
+    }
+
+    message += " 👋!";
+
+    setMessage(message);
+  }, []);
+
+  useEffect(() => {
+    const width = window.innerWidth;
+
+    if (width < 750) {
+      setMenuHomeIsVisible(false);
+    }
+  }, [location.pathname]);
 
   function handleLogout() {
     logout();
     navigate("/login");
   }
 
+  const handleClickMenu = (e: { keyPath: string[] }) => {
+    setOpenCurrent(e.keyPath);
+  };
+
+  const handleDisplayMenuHome = () => {
+    setMenuHomeIsVisible(!menuHomeIsVisible);
+  };
+
   return (
     <>
       {contextHolder}
       <HeaderContainer>
         <LogoContainer>
-          <ButtonMenu onClick={displayMenu}>{isVisible ? <CloseOutlined /> : <MenuOutlined />}</ButtonMenu>
-          <LogoImage src={Logo} alt="Logo" />
+          {location.pathname.includes("/painel") && (
+            <ButtonMenu className="menu-painel" onClick={displayMenu}>
+              {isVisible ? <CloseOutlined /> : <MenuOutlined />}
+            </ButtonMenu>
+          )}
+          {!location.pathname.includes("/painel") && (
+            <ButtonMenu className="menu-home" onClick={handleDisplayMenuHome}>
+              {menuHomeIsVisible ? <CloseOutlined /> : <MenuOutlined />}
+            </ButtonMenu>
+          )}
+          <Link to={"/"} style={{ height: "100%" }}>
+            <LogoImage src={Logo} alt="Logo" />
+          </Link>
         </LogoContainer>
 
         {!location.pathname.includes("/painel") && (
@@ -108,7 +255,7 @@ const Screen = ({ displayMenu, isVisible, children }: ScreenProps) => {
 
         <UserMenuContainer>
           {isCheckingAuth ? null : user?.uid ? (
-            <MenuUser menu={{ items }} placement="bottomRight" arrow>
+            <MenuUser menu={{ items: itemsUser }} placement="bottomRight" arrow>
               <UserButton>
                 <UserOutlined style={{ fontSize: "24px", color: "white" }} />
               </UserButton>
@@ -125,6 +272,14 @@ const Screen = ({ displayMenu, isVisible, children }: ScreenProps) => {
             </>
           )}
         </UserMenuContainer>
+
+        <MenuContainer isVisible={menuHomeIsVisible}>
+          <InfoContainer>
+            <Info className="greeting">{message}</Info>
+            <Info className="welcome">Seja bem-vindo ao ValidControl!</Info>
+          </InfoContainer>
+          <MenuList onClick={handleClickMenu} style={{ width: 256 }} selectedKeys={openCurrent} mode="vertical" theme="dark" items={dynamicItems} />
+        </MenuContainer>
       </HeaderContainer>
 
       <MainContainer>{children}</MainContainer>

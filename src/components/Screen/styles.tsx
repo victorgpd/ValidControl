@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Anchor, Dropdown } from "antd";
+import { Anchor, Dropdown, Menu } from "antd";
 
 export const HeaderContainer = styled.header`
   width: 100%;
@@ -34,11 +34,19 @@ export const ButtonMenu = styled.button`
   cursor: pointer;
   color: white;
   height: 100%;
-  font-size: larger;
+  font-size: 20px;
   display: none;
 
   @media screen and (max-width: 920px) {
-    display: inline-block;
+    &.menu-painel {
+      display: inline-block;
+    }
+  }
+
+  @media screen and (max-width: 750px) {
+    &.menu-home {
+      display: inline-block;
+    }
   }
 `;
 
@@ -50,6 +58,10 @@ export const ButtonsContainer = styled.ul`
   align-items: center;
 
   position: relative;
+
+  @media screen and (max-width: 750px) {
+    display: none;
+  }
 `;
 
 export const AnchorMenu = styled(Anchor)`
@@ -69,6 +81,10 @@ export const AnchorMenu = styled(Anchor)`
 export const UserMenuContainer = styled.ul`
   gap: 5px;
   display: flex;
+
+  @media screen and (max-width: 750px) {
+    display: none;
+  }
 `;
 
 export const UserButton = styled.div`
@@ -91,4 +107,98 @@ export const MainContainer = styled.main`
   flex: 1;
   padding-top: 62px;
   background-color: #f0f4f8;
+`;
+
+export const PainelContainer = styled.div`
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  flex-flow: row;
+`;
+
+export const MenuContainer = styled.aside<{ isVisible: boolean }>`
+  width: 256px;
+  padding: 10px 0;
+  height: calc(100% - 62px);
+  background-color: #2f2f2f;
+
+  gap: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  position: fixed;
+  top: 62px;
+  left: ${(props) => (props.isVisible ? "0" : "-256px")};
+
+  transition: left 0.3s;
+
+  z-index: 998;
+`;
+
+export const InfoContainer = styled.div`
+  width: 100%;
+  padding: 10px 0;
+
+  gap: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+export const Info = styled.span`
+  color: white;
+  text-align: center;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+
+  &.greeting {
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  &.welcome {
+    font-size: 16px;
+    font-weight: 400;
+    color: #bbbbbb;
+  }
+`;
+
+export const MenuList = styled(Menu)`
+  background-color: #2f2f2f !important;
+  color: white !important;
+
+  .ant-menu-item-selected {
+    background-color: #4b4b4b !important; /* Fundo do item selecionado */
+    color: #80d8ff !important;
+  }
+
+  .ant-menu-item {
+    color: white;
+  }
+
+  .ant-menu-item-active {
+    color: #1677ff !important;
+  }
+
+  .ant-menu-item:hover {
+    background-color: white !important;
+  }
+
+  .ant-menu-submenu-active > .ant-menu-submenu-title {
+    background: white !important;
+    color: #1677ff;
+  }
+
+  .ant-menu-submenu-title {
+    color: white;
+  }
+
+  .ant-menu-submenu-selected {
+    background-color: #4b4b4b !important;
+
+    & span {
+      color: #80d8ff !important;
+    }
+  }
 `;

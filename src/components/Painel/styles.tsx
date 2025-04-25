@@ -21,6 +21,7 @@ export const MenuContainer = styled.aside<{ isVisible: boolean }>`
   align-items: center;
 
   position: sticky;
+  transition: left 0.3s;
 
   @media screen and (max-width: 920px) {
     height: calc(100% - 62px);
