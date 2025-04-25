@@ -36,6 +36,7 @@ import { useNotification } from "../../hooks/useNotification";
 import { useAppSelector } from "../../hooks/store";
 import useAuthentication from "../../hooks/useAuthentication";
 import { useEffect, useState } from "react";
+import { RoutesEnum } from "../../enums/routes";
 
 interface ScreenProps {
   displayMenu?: () => void;
@@ -92,7 +93,7 @@ const Screen = ({ displayMenu, isVisible, children }: ScreenProps) => {
       key: "2",
       label: "Painel",
       icon: <PieChartOutlined />,
-      onClick: () => navigate("/painel/dashboard"),
+      onClick: () => navigate(RoutesEnum.Dashboard),
     },
     {
       key: "3",
@@ -121,7 +122,7 @@ const Screen = ({ displayMenu, isVisible, children }: ScreenProps) => {
       key: "home",
       icon: <HomeOutlined />,
       label: "Home",
-      onClick: () => navigate("/"),
+      onClick: () => navigate(RoutesEnum.Home),
     },
     {
       key: "overview",
@@ -151,7 +152,7 @@ const Screen = ({ displayMenu, isVisible, children }: ScreenProps) => {
             key: "painel",
             icon: <PieChartOutlined />,
             label: "Painel",
-            onClick: () => navigate("/painel/dashboard"),
+            onClick: () => navigate(RoutesEnum.Dashboard),
           },
           {
             key: "profile",
@@ -178,13 +179,13 @@ const Screen = ({ displayMenu, isVisible, children }: ScreenProps) => {
             key: "login",
             icon: <LoginOutlined />,
             label: "Login",
-            onClick: () => navigate("/login"),
+            onClick: () => navigate(RoutesEnum.Login),
           },
           {
             key: "register",
             icon: <UserAddOutlined />,
             label: "Cadastro",
-            onClick: () => navigate("/register"),
+            onClick: () => navigate(RoutesEnum.Register),
           },
         ]),
   ];
@@ -216,7 +217,7 @@ const Screen = ({ displayMenu, isVisible, children }: ScreenProps) => {
 
   function handleLogout() {
     logout();
-    navigate("/login");
+    navigate(RoutesEnum.Login);
   }
 
   const handleClickMenu = (e: { keyPath: string[] }) => {
@@ -262,11 +263,11 @@ const Screen = ({ displayMenu, isVisible, children }: ScreenProps) => {
             </MenuUser>
           ) : (
             <>
-              <Button color="cyan" onClick={() => navigate("/login")} variant="text">
+              <Button color="cyan" onClick={() => navigate(RoutesEnum.Login)} variant="text">
                 Acessar
               </Button>
 
-              <Button color="cyan" onClick={() => navigate("/register")} variant="text">
+              <Button color="cyan" onClick={() => navigate(RoutesEnum.Register)} variant="text">
                 Começar agora
               </Button>
             </>

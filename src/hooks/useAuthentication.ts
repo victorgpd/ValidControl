@@ -8,6 +8,7 @@ import { UserType } from "../types/types";
 import { redirect } from "react-router-dom";
 import { useDocument } from "./useDocument";
 import { Timestamp } from "firebase/firestore";
+import { RoutesEnum } from "../enums/routes";
 
 const useAuthentication = () => {
   const dispatch = useAppDispatch();
@@ -122,7 +123,7 @@ const useAuthentication = () => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         dispatch(setUser({ name: user.displayName, email: user.email, uid: user.uid }));
-        if (navigate) navigate("/");
+        if (navigate) navigate(RoutesEnum.Home);
       } else {
         dispatch(setUser({ name: null, email: null, uid: null }));
       }
@@ -140,7 +141,7 @@ const useAuthentication = () => {
           resolve(null); // deixa o loader continuar
         } else {
           dispatch(setUser({ name: null, email: null, uid: null }));
-          resolve(redirect("/login")); // redireciona
+          resolve(redirect(RoutesEnum.Login)); // redireciona
         }
       });
     });

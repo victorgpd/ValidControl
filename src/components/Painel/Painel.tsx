@@ -7,6 +7,7 @@ import { useAppSelector } from "../../hooks/store";
 import { useEffect, useMemo, useState } from "react";
 import { Info, InfoContainer, MenuContainer, MenuList, PainelContainer } from "./styles";
 import { CalendarOutlined, DatabaseOutlined, LogoutOutlined, PieChartOutlined, SettingOutlined, ShoppingCartOutlined } from "@ant-design/icons";
+import { RoutesEnum } from "../../enums/routes";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -31,7 +32,7 @@ const Painel = ({ children }: PainelProps) => {
   }, [user?.name]);
 
   const items: MenuItem[] = [
-    { key: "dashboard", icon: <PieChartOutlined />, label: "Dashboard" },
+    { key: "dashboard", icon: <PieChartOutlined />, label: "Dashboard", onClick: () => navigate(RoutesEnum.Dashboard) },
     {
       key: "products",
       label: "Produtos",
@@ -40,6 +41,7 @@ const Painel = ({ children }: PainelProps) => {
         {
           key: "product1",
           label: "Produtos cadastrados",
+          onClick: () => navigate(RoutesEnum.Products),
         },
         {
           key: "product2",
@@ -94,7 +96,7 @@ const Painel = ({ children }: PainelProps) => {
 
   function handleLogout() {
     logout();
-    navigate("/login");
+    navigate(RoutesEnum.Login);
   }
 
   const handleClickMenu: MenuProps["onClick"] = (e) => {
@@ -115,7 +117,7 @@ const Painel = ({ children }: PainelProps) => {
             </Info>
             <Info className="welcome">Seja bem-vindo ao seu painel!</Info>
           </InfoContainer>
-          <MenuList onClick={handleClickMenu} style={{ width: 256 }} selectedKeys={openCurrent} mode="vertical" theme="dark" items={items} />
+          <MenuList onClick={handleClickMenu} style={{ width: 256 }} selectedKeys={openCurrent} mode="inline" theme="dark" items={items} />
         </MenuContainer>
 
         {children}

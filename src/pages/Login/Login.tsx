@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Image, ImageContainer, LoginContainer, LoginContent, LoginForm, LoginPage, LoginTitle } from "./styles";
 import useTitle from "../../hooks/useTitle";
+import { RoutesEnum } from "../../enums/routes";
 
 const Login = () => {
   useTitle("Login");
@@ -35,7 +36,7 @@ const Login = () => {
   const handleLogin = async () => {
     const success = await loginFirebase(login.email, login.password);
     if (success) {
-      navigate("/");
+      navigate(RoutesEnum.Home);
     }
   };
 

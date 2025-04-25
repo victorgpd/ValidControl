@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { WhereFilterOp } from "firebase/firestore";
 import { useAppSelector } from "../../../hooks/store";
 import { InformacoesType, ValidityType } from "../../../types/types";
-import { useFetchDocumentsOnce } from "../../../hooks/useFetchDocumentsOnce";
+import { useRealtimeDocuments } from "../../../hooks/useRealtimeDocuments";
 import { ContainerCards, ContainerGraph, ContainerGraphs, DashboardContainer, Graph, GraphTitle, InfoCard, InfoTitle, InfoValue } from "./styles";
 
 const Dashboard = () => {
@@ -33,7 +33,7 @@ const Dashboard = () => {
     },
   ];
 
-  const { document } = useFetchDocumentsOnce("lojas", conditions);
+  const { documents } = useRealtimeDocuments("lojas", conditions);
 
   const [data, setData] = useState(
     Array.from({ length: 15 }, (_, i) => ({
@@ -113,13 +113,19 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    if (document) {
+    if (documents) {
       const date = new Date();
 
-      const newData = [...data];
-      const newVencidos = [...vencidosData];
+      const newData = Array.from({ length: 15 }, (_, i) => ({
+        day: `${i + 1}`,
+        frequency: 0,
+      }));
+      const newVencidos = Array.from({ length: 15 }, (_, i) => ({
+        day: `${i + 1}`,
+        frequency: 0,
+      }));
 
-      const aVencer = document.validitys.filter((validade: ValidityType) => {
+      const aVencer = documents.validitys.filter((validade: ValidityType) => {
         const diferenca = validade.date - date.getTime();
         const dias = Math.floor(diferenca / (1000 * 60 * 60 * 24));
 
@@ -130,7 +136,7 @@ const Dashboard = () => {
         return false;
       });
 
-      const vencidos = document.validitys.filter((validade: ValidityType) => {
+      const vencidos = documents.validitys.filter((validade: ValidityType) => {
         const diferenca = validade.date - date.getTime();
         const dias = Math.floor(diferenca / (1000 * 60 * 60 * 24));
         const index = Math.abs(dias) - 1;
@@ -147,16 +153,16 @@ const Dashboard = () => {
       setInfo({
         aVencer,
         vencidos,
-        name: document.name,
-        store: document.store,
-        access: document.access,
-        products: document.products,
-        validitys: document.validitys,
-        createdBy: document.createdBy,
-        createdAt: document.createdAt.toDate().toLocaleDateString("pt-BR"),
+        name: documents.name,
+        store: documents.store,
+        access: documents.access,
+        products: documents.products,
+        validitys: documents.validitys,
+        createdBy: documents.createdBy,
+        createdAt: documents.createdAt.toDate().toLocaleDateString("pt-BR"),
       });
     }
-  }, [document]);
+  }, [documents]);
 
   return (
     <Painel>

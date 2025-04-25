@@ -28,7 +28,8 @@ export interface ValidityType {
 export interface ProductType {
   id: string;
   name: string;
-  barcode: number;
+  barcode: string;
+  idDocument?: string | undefined;
 }
 
 export interface InformacoesType {

@@ -5,6 +5,7 @@ import Home from "../pages/Home/Home";
 import Login from "../pages/Login/Login";
 import Register from "../pages/Register/Register";
 import Dashboard from "../pages/Painel/Dashboard/Dashboard";
+import Products from "../pages/Painel/Products/ProductsDashboard/Products";
 
 export const screensRoutes: RouteObject[] = [
   {
@@ -26,5 +27,9 @@ export const loggedScreensRoutes: RouteObject[] = [
   {
     path: RoutesEnum.Dashboard,
     element: <Dashboard />,
+  },
+  {
+    path: RoutesEnum.Products,
+    element: <Products />,
   },
 ];

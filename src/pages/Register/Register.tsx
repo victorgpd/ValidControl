@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { LockOutlined, ShopOutlined, UserOutlined } from "@ant-design/icons";
 import { Image, ImageContainer, RegisterContainer, RegisterContent, RegisterForm, RegisterPage, RegisterTitle } from "./styles";
 import useTitle from "../../hooks/useTitle";
+import { RoutesEnum } from "../../enums/routes";
 
 const Register = () => {
   useTitle("Cadastrar-se");
@@ -35,7 +36,7 @@ const Register = () => {
   const handleRegister = async () => {
     const success = await RegisterFirebase(register);
     if (success) {
-      navigate("/");
+      navigate(RoutesEnum.Home);
     }
   };
 
