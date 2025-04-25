@@ -9,8 +9,11 @@ import { UserType } from "../../types/types";
 import { useNavigate } from "react-router-dom";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Image, ImageContainer, LoginContainer, LoginContent, LoginForm, LoginPage, LoginTitle } from "./styles";
+import useTitle from "../../hooks/useTitle";
 
 const Login = () => {
+  useTitle("Login");
+
   const navigate = useNavigate();
 
   const [login, setLogin] = useState<UserType>({

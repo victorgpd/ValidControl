@@ -8,8 +8,10 @@ import { Button, Input } from "antd";
 import { useNavigate } from "react-router-dom";
 import { LockOutlined, ShopOutlined, UserOutlined } from "@ant-design/icons";
 import { Image, ImageContainer, RegisterContainer, RegisterContent, RegisterForm, RegisterPage, RegisterTitle } from "./styles";
+import useTitle from "../../hooks/useTitle";
 
 const Register = () => {
+  useTitle("Cadastrar-se");
   const navigate = useNavigate();
 
   const [register, setRegister] = useState({

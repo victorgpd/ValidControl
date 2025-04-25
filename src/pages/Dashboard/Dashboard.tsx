@@ -6,8 +6,11 @@ import { useAppSelector } from "../../hooks/store";
 import { InformacoesType, ValidityType } from "../../types/types";
 import { useFetchDocumentsOnce } from "../../hooks/useFetchDocumentsOnce";
 import { ContainerCards, ContainerGraph, ContainerGraphs, DashboardContainer, Graph, GraphTitle, InfoCard, InfoTitle, InfoValue } from "./styles";
+import useTitle from "../../hooks/useTitle";
 
 const Dashboard = () => {
+  useTitle("Dashboard");
+
   const [info, setInfo] = useState<InformacoesType>({
     name: null,
     store: null,
