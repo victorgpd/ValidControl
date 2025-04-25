@@ -1,12 +1,12 @@
-import Painel from "../../components/Painel/Painel";
+import useTitle from "../../../hooks/useTitle";
+import Painel from "../../../components/Painel/Painel";
 
 import { useEffect, useState } from "react";
 import { WhereFilterOp } from "firebase/firestore";
-import { useAppSelector } from "../../hooks/store";
-import { InformacoesType, ValidityType } from "../../types/types";
-import { useFetchDocumentsOnce } from "../../hooks/useFetchDocumentsOnce";
+import { useAppSelector } from "../../../hooks/store";
+import { InformacoesType, ValidityType } from "../../../types/types";
+import { useFetchDocumentsOnce } from "../../../hooks/useFetchDocumentsOnce";
 import { ContainerCards, ContainerGraph, ContainerGraphs, DashboardContainer, Graph, GraphTitle, InfoCard, InfoTitle, InfoValue } from "./styles";
-import useTitle from "../../hooks/useTitle";
 
 const Dashboard = () => {
   useTitle("Dashboard");
@@ -52,14 +52,20 @@ const Dashboard = () => {
     data,
     xField: "day",
     yField: "frequency",
-    onReady: ({ chart }) => {
+    onReady: (params: {
+      chart: {
+        _container: HTMLElement;
+        on: (eventName: string, callback: () => void, once?: boolean) => void;
+        emit: (eventName: string, payload: { data: { data: (typeof data)[number] }; offsetY: number }) => void;
+      };
+    }) => {
       try {
-        const { height } = chart._container.getBoundingClientRect();
+        const { height } = params.chart._container.getBoundingClientRect();
         const tooltipItem = data[Math.floor(Math.random() * data.length)];
-        chart.on(
+        params.chart.on(
           "afterrender",
           () => {
-            chart.emit("tooltip:show", {
+            params.chart.emit("tooltip:show", {
               data: {
                 data: tooltipItem,
               },
@@ -78,14 +84,20 @@ const Dashboard = () => {
     data: vencidosData,
     xField: "day",
     yField: "frequency",
-    onReady: ({ chart }) => {
+    onReady: (params: {
+      chart: {
+        _container: HTMLElement;
+        on: (eventName: string, callback: () => void, once?: boolean) => void;
+        emit: (eventName: string, payload: { data: { data: (typeof data)[number] }; offsetY: number }) => void;
+      };
+    }) => {
       try {
-        const { height } = chart._container.getBoundingClientRect();
+        const { height } = params.chart._container.getBoundingClientRect();
         const tooltipItem = vencidosData[Math.floor(Math.random() * vencidosData.length)];
-        chart.on(
+        params.chart.on(
           "afterrender",
           () => {
-            chart.emit("tooltip:show", {
+            params.chart.emit("tooltip:show", {
               data: {
                 data: tooltipItem,
               },
