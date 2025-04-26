@@ -33,7 +33,9 @@ const Register = () => {
     setRegister({ ...register, [event.target.name]: event.target.value });
   };
 
-  const handleRegister = async () => {
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+
     const success = await RegisterFirebase(register);
     if (success) {
       navigate(RoutesEnum.Home);
@@ -50,7 +52,7 @@ const Register = () => {
 
           <RegisterContent>
             <RegisterTitle>Cadastrar-se</RegisterTitle>
-            <RegisterForm>
+            <RegisterForm onSubmit={handleRegister}>
               <Input
                 variant="underlined"
                 prefix={<ShopOutlined />}
@@ -87,7 +89,7 @@ const Register = () => {
                 onChange={handleChange}
               />
 
-              <Button color="cyan" onClick={handleRegister} loading={loading} variant="solid">
+              <Button color="cyan" loading={loading} variant="solid">
                 Entrar
               </Button>
             </RegisterForm>

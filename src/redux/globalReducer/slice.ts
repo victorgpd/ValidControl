@@ -1,15 +1,17 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { NotificationType, UserLoggedType } from "../../types/types";
+import { InformacoesType, NotificationType, UserLoggedType } from "../../types/types";
 
 interface initialStateType {
-  user: UserLoggedType | null;
   openCurrentMenu: string[];
+  user: UserLoggedType | null;
+  loja: InformacoesType | null;
   notification: NotificationType | null;
 }
 const initialState: initialStateType = {
+  loja: null,
   user: null,
-  openCurrentMenu: ["dashboard"],
   notification: null,
+  openCurrentMenu: ["dashboard"],
 };
 
 const globalSlice = createSlice({
@@ -25,8 +27,11 @@ const globalSlice = createSlice({
     setNotification: (state, action: PayloadAction<NotificationType | null>) => {
       state.notification = action.payload;
     },
+    setLoja: (state, action: PayloadAction<InformacoesType>) => {
+      state.loja = action.payload;
+    },
   },
 });
 
 export const globalReducer = globalSlice.reducer;
-export const { setUser, setOpenCurrentMenu, setNotification } = globalSlice.actions;
+export const { setUser, setLoja, setOpenCurrentMenu, setNotification } = globalSlice.actions;

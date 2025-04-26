@@ -6,6 +6,7 @@ import Login from "../pages/Login/Login";
 import Register from "../pages/Register/Register";
 import Dashboard from "../pages/Painel/Dashboard/Dashboard";
 import Products from "../pages/Painel/Products/ProductsDashboard/Products";
+import ProductManager from "../pages/Painel/Products/ProductManager/ProductManager";
 
 export const screensRoutes: RouteObject[] = [
   {
@@ -31,5 +32,13 @@ export const loggedScreensRoutes: RouteObject[] = [
   {
     path: RoutesEnum.Products,
     element: <Products />,
+  },
+  {
+    path: RoutesEnum.Product_Create,
+    element: <ProductManager />,
+  },
+  {
+    path: RoutesEnum.Product_Edit,
+    element: <ProductManager />,
   },
 ];

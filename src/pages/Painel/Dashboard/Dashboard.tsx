@@ -2,38 +2,20 @@ import useTitle from "../../../hooks/useTitle";
 import Painel from "../../../components/Painel/Painel";
 
 import { useEffect, useState } from "react";
-import { WhereFilterOp } from "firebase/firestore";
+import { ValidityType } from "../../../types/types";
 import { useAppSelector } from "../../../hooks/store";
-import { InformacoesType, ValidityType } from "../../../types/types";
-import { useRealtimeDocuments } from "../../../hooks/useRealtimeDocuments";
 import { ContainerCards, ContainerGraph, ContainerGraphs, DashboardContainer, Graph, GraphTitle, InfoCard, InfoTitle, InfoValue } from "./styles";
+import { Timestamp } from "firebase/firestore";
 
 const Dashboard = () => {
   useTitle("Dashboard");
 
-  const [info, setInfo] = useState<InformacoesType>({
-    name: null,
-    store: null,
-    access: null,
+  const { loja } = useAppSelector((state) => state.globalReducer);
+
+  const [info, setInfo] = useState<{ aVencer: ValidityType[] | null; vencidos: ValidityType[] | null }>({
     aVencer: null,
     vencidos: null,
-    products: null,
-    validitys: null,
-    createdBy: null,
-    createdAt: null,
   });
-
-  const { user } = useAppSelector((state) => state.globalReducer);
-
-  const conditions: { field: string; op: WhereFilterOp; value: string }[] = [
-    {
-      field: "access",
-      op: "array-contains",
-      value: user?.email || "",
-    },
-  ];
-
-  const { documents } = useRealtimeDocuments("lojas", conditions);
 
   const [data, setData] = useState(
     Array.from({ length: 15 }, (_, i) => ({
@@ -112,8 +94,17 @@ const Dashboard = () => {
     },
   };
 
+  function formatDate(date: string | Timestamp | null | undefined) {
+    if (!date) return "Indisponível";
+
+    if (typeof date === "string") {
+      return new Date(date).toLocaleDateString("pt-BR");
+    }
+    return date.toDate().toLocaleDateString("pt-BR");
+  }
+
   useEffect(() => {
-    if (documents) {
+    if (loja?.validitys) {
       const date = new Date();
 
       const newData = Array.from({ length: 15 }, (_, i) => ({
@@ -125,7 +116,7 @@ const Dashboard = () => {
         frequency: 0,
       }));
 
-      const aVencer = documents.validitys.filter((validade: ValidityType) => {
+      const aVencer = loja.validitys.filter((validade: ValidityType) => {
         const diferenca = validade.date - date.getTime();
         const dias = Math.floor(diferenca / (1000 * 60 * 60 * 24));
 
@@ -136,7 +127,7 @@ const Dashboard = () => {
         return false;
       });
 
-      const vencidos = documents.validitys.filter((validade: ValidityType) => {
+      const vencidos = loja.validitys.filter((validade: ValidityType) => {
         const diferenca = validade.date - date.getTime();
         const dias = Math.floor(diferenca / (1000 * 60 * 60 * 24));
         const index = Math.abs(dias) - 1;
@@ -153,16 +144,9 @@ const Dashboard = () => {
       setInfo({
         aVencer,
         vencidos,
-        name: documents.name,
-        store: documents.store,
-        access: documents.access,
-        products: documents.products,
-        validitys: documents.validitys,
-        createdBy: documents.createdBy,
-        createdAt: documents.createdAt.toDate().toLocaleDateString("pt-BR"),
       });
     }
-  }, [documents]);
+  }, [loja]);
 
   return (
     <Painel>
@@ -171,30 +155,30 @@ const Dashboard = () => {
           {/* Cards de informações */}
           <InfoCard>
             <InfoTitle>Nome da loja:</InfoTitle>
-            <InfoValue>{info.store}</InfoValue>
+            <InfoValue>{loja?.store}</InfoValue>
           </InfoCard>
 
           <InfoCard>
             <InfoTitle>Nome do criador:</InfoTitle>
-            <InfoValue>{info.name}</InfoValue>
+            <InfoValue>{loja?.name}</InfoValue>
           </InfoCard>
 
           <InfoCard>
             <InfoTitle>Loja criada:</InfoTitle>
-            <InfoValue>{info.createdAt}</InfoValue>
+            <InfoValue>{formatDate(loja?.createdAt)}</InfoValue>
           </InfoCard>
 
           <InfoCard>
             <InfoTitle>Produtos Cadastrados:</InfoTitle>
             <InfoValue>
-              {info.products?.length} {info.products?.length === 1 ? "produto" : "produtos"}
+              {loja?.products?.length} {loja?.products?.length === 1 ? "produto" : "produtos"}
             </InfoValue>
           </InfoCard>
 
           <InfoCard>
             <InfoTitle>Validades Cadastradas:</InfoTitle>
             <InfoValue>
-              {info.validitys?.length} {info.validitys?.length === 1 ? "validade" : "validades"}
+              {loja?.validitys?.length} {loja?.validitys?.length === 1 ? "validade" : "validades"}
             </InfoValue>
           </InfoCard>
 
@@ -215,7 +199,7 @@ const Dashboard = () => {
           <InfoCard>
             <InfoTitle>Usuários da loja:</InfoTitle>
             <InfoValue>
-              {info.access?.length} {info.access?.length === 1 ? "usuário" : "usuários"}
+              {loja?.access?.length} {loja?.access?.length === 1 ? "usuário" : "usuários"}
             </InfoValue>
           </InfoCard>
         </ContainerCards>

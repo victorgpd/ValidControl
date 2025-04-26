@@ -8,7 +8,9 @@ import { useEffect, useMemo, useState } from "react";
 import { Info, InfoContainer, MenuContainer, MenuList, PainelContainer } from "./styles";
 import { CalendarOutlined, DatabaseOutlined, LogoutOutlined, PieChartOutlined, SettingOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import { RoutesEnum } from "../../enums/routes";
-import { setOpenCurrentMenu } from "../../redux/globalReducer/slice";
+import { setLoja, setOpenCurrentMenu } from "../../redux/globalReducer/slice";
+import { WhereFilterOp } from "firebase/firestore";
+import { useRealtimeDocuments } from "../../hooks/useRealtimeDocuments";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -19,21 +21,6 @@ interface PainelProps {
 const Painel = ({ children }: PainelProps) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-
-  const { openCurrentMenu } = useAppSelector((state) => state.globalReducer);
-
-  const [isVisible, setIsVisible] = useState<boolean>(false);
-  const [message, setMessage] = useState<string>("");
-  const [openCurrent] = useState<string[]>(openCurrentMenu);
-
-  const { logout } = useAuthentication();
-  const { user } = useAppSelector((state) => state.globalReducer);
-
-  const name = useMemo(() => {
-    const nameLocal = user?.name?.split(" ");
-
-    return nameLocal ? nameLocal[0] : "";
-  }, [user?.name]);
 
   const items: MenuItem[] = [
     { key: "dashboard", icon: <PieChartOutlined />, label: "Dashboard", onClick: () => navigate(RoutesEnum.Dashboard) },
@@ -50,6 +37,7 @@ const Painel = ({ children }: PainelProps) => {
         {
           key: "product2",
           label: "Cadastrar novo produto",
+          onClick: () => (window.location.href = RoutesEnum.Product_Create),
         },
       ],
     },
@@ -91,12 +79,53 @@ const Painel = ({ children }: PainelProps) => {
     },
   ];
 
+  const { openCurrentMenu } = useAppSelector((state) => state.globalReducer);
+
+  const [isVisible, setIsVisible] = useState<boolean>(false);
+  const [message, setMessage] = useState<string>("");
+  const [openCurrent, setOpenCurrent] = useState<string[]>(openCurrentMenu);
+
+  const { logout } = useAuthentication();
+  const { user } = useAppSelector((state) => state.globalReducer);
+
+  const conditions: { field: string; op: WhereFilterOp; value: string }[] = [
+    {
+      field: "access",
+      op: "array-contains",
+      value: user?.email || "",
+    },
+  ];
+
+  const { documents } = useRealtimeDocuments("lojas", conditions);
+
+  const name = useMemo(() => {
+    const nameLocal = user?.name?.split(" ");
+
+    return nameLocal ? nameLocal[0] : "";
+  }, [user?.name]);
+
+  useEffect(() => {
+    if (documents) {
+      dispatch(
+        setLoja({
+          ...documents,
+          idDocument: documents.id,
+          createdAt: documents.createdAt?.toDate().toISOString(), // ou toMillis()
+        })
+      );
+    }
+  }, [documents]);
+
   useEffect(() => {
     const hour = new Date().getHours();
     const message = hour < 12 ? "Bom dia" : hour < 18 ? "Boa tarde" : "Boa noite";
 
     setMessage(message);
   }, []);
+
+  useEffect(() => {
+    setOpenCurrent(openCurrentMenu);
+  }, [openCurrentMenu]);
 
   function handleLogout() {
     logout();

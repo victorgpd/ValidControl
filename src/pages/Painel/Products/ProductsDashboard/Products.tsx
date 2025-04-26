@@ -1,15 +1,22 @@
 import Table from "../../../../components/Table/Table";
 import Painel from "../../../../components/Painel/Painel";
 
-import { WhereFilterOp } from "firebase/firestore";
+import { useEffect } from "react";
 import { ProductType } from "../../../../types/types";
 import { useFields } from "../../../../hooks/useFields";
-import { useAppSelector } from "../../../../hooks/store";
-import { useRealtimeDocuments } from "../../../../hooks/useRealtimeDocuments";
+import { useAppDispatch, useAppSelector } from "../../../../hooks/store";
+import { setOpenCurrentMenu } from "../../../../redux/globalReducer/slice";
 import { AppstoreAddOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { ButtonAdd, ButtonsTable, ContainerButtonsTable, ProductsPage, TableContainer } from "./styles";
+import { useNavigate } from "react-router-dom";
+import { RoutesEnum } from "../../../../enums/routes";
 
 const Products = () => {
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  const { loja } = useAppSelector((state) => state.globalReducer);
+
   const columns = [
     {
       title: "ID",
@@ -32,45 +39,42 @@ const Products = () => {
       key: "action",
       render: (_: any, record: ProductType) => (
         <ContainerButtonsTable>
-          <ButtonsTable color="primary" variant="outlined">
+          <ButtonsTable onClick={() => navigate(`/painel/products/edit/${record.id}`)} color="primary" variant="outlined">
             <EditOutlined />
             <span>Editar</span>
           </ButtonsTable>
-          <ButtonsTable color="danger" variant="outlined" onClick={() => handleRemove(dataSource?.id, record)}>
-            <DeleteOutlined />
-            <span>Excluir</span>
-          </ButtonsTable>
+          {loja?.idDocument && (
+            <ButtonsTable color="danger" variant="outlined" onClick={() => handleRemove(loja?.idDocument, record)}>
+              <DeleteOutlined />
+              <span>Excluir</span>
+            </ButtonsTable>
+          )}
         </ContainerButtonsTable>
       ),
     },
   ];
 
-  const { user } = useAppSelector((state) => state.globalReducer);
-
-  const conditions = [
-    {
-      field: "access",
-      op: "array-contains" as WhereFilterOp,
-      value: user?.email || "",
-    },
-  ];
-
-  const { documents: dataSource } = useRealtimeDocuments("lojas", conditions);
   const { removeItemFromArray } = useFields("lojas");
 
-  async function handleRemove(docId: string, itemToRemove: ProductType) {
+  async function handleRemove(docId: string | undefined, itemToRemove: ProductType) {
+    if (!docId) return;
+
     await removeItemFromArray(docId, "products", itemToRemove);
   }
+
+  useEffect(() => {
+    dispatch(setOpenCurrentMenu(["products", "product1"]));
+  }, []);
 
   return (
     <Painel>
       <ProductsPage>
         <h2>Produtos cadastrados</h2>
         <TableContainer>
-          <ButtonAdd icon={<AppstoreAddOutlined />} color="primary" variant="solid">
+          <ButtonAdd icon={<AppstoreAddOutlined />} onClick={() => navigate(RoutesEnum.Product_Create)} color="primary" variant="solid">
             Novo
           </ButtonAdd>
-          <Table dataSource={dataSource?.products} columns={columns} />
+          {loja?.products && <Table dataSource={loja?.products} columns={columns} />}
         </TableContainer>
       </ProductsPage>
     </Painel>

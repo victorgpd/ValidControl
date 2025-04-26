@@ -33,7 +33,9 @@ const Login = () => {
     setLogin({ ...login, [event.target.name]: event.target.value });
   };
 
-  const handleLogin = async () => {
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+
     const success = await loginFirebase(login.email, login.password);
     if (success) {
       navigate(RoutesEnum.Home);
@@ -50,7 +52,7 @@ const Login = () => {
 
           <LoginContent>
             <LoginTitle>Login</LoginTitle>
-            <LoginForm>
+            <LoginForm onSubmit={handleLogin}>
               <Input variant="underlined" prefix={<UserOutlined />} style={{ fontSize: "15px" }} type="email" id="email" name="email" placeholder="Email" value={login.email} onChange={handleChange} />
 
               <Input
@@ -65,7 +67,7 @@ const Login = () => {
                 onChange={handleChange}
               />
 
-              <Button color="cyan" onClick={handleLogin} loading={loading} variant="solid">
+              <Button color="cyan" loading={loading} variant="solid">
                 Entrar
               </Button>
             </LoginForm>

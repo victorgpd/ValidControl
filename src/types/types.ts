@@ -1,3 +1,5 @@
+import { Timestamp } from "firebase/firestore";
+
 export interface UserType {
   email: string;
   password: string;
@@ -29,17 +31,17 @@ export interface ProductType {
   id: string;
   name: string;
   barcode: string;
-  idDocument?: string | undefined;
 }
 
 export interface InformacoesType {
   name: string | null;
   store: string | null;
   access: string[] | null;
-  createdAt: string | null;
   createdBy: string | null;
   aVencer: ValidityType[] | null;
   products: ProductType[] | null;
+  idDocument: string | undefined;
   vencidos: ValidityType[] | null;
   validitys: ValidityType[] | null;
+  createdAt: string | Timestamp | null;
 }
