@@ -67,7 +67,7 @@ const Login = () => {
                 onChange={handleChange}
               />
 
-              <Button color="cyan" loading={loading} variant="solid">
+              <Button htmlType="submit" color="cyan" loading={loading} variant="solid">
                 Entrar
               </Button>
             </LoginForm>
