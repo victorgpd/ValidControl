@@ -4,7 +4,11 @@ export enum RoutesEnum {
   Register = "/register",
 
   Dashboard = "/painel/dashboard",
+
   Products = "/painel/products",
   Product_Create = "/painel/products/create",
   Product_Edit = "/painel/products/edit/:id",
+
+  Validitys = "/painel/validitys",
+  Validitys_Create = "/painel/validitys/create",
 }

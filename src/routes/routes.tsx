@@ -7,6 +7,7 @@ import Register from "../pages/Register/Register";
 import Dashboard from "../pages/Painel/Dashboard/Dashboard";
 import Products from "../pages/Painel/Products/ProductsDashboard/Products";
 import ProductManager from "../pages/Painel/Products/ProductManager/ProductManager";
+import Validitys from "../pages/Painel/Validitys/ValiditysDashboard/ValiditysDashboard";
 
 export const screensRoutes: RouteObject[] = [
   {
@@ -40,5 +41,9 @@ export const loggedScreensRoutes: RouteObject[] = [
   {
     path: RoutesEnum.Product_Edit,
     element: <ProductManager />,
+  },
+  {
+    path: RoutesEnum.Validitys,
+    element: <Validitys />,
   },
 ];

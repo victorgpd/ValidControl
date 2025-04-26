@@ -42,13 +42,14 @@ const Painel = ({ children }: PainelProps) => {
       ],
     },
     {
-      key: "validity",
+      key: "validitys",
       label: "Validades",
       icon: <CalendarOutlined />,
       children: [
         {
           key: "validity1",
           label: "Validades cadastradas",
+          onClick: () => navigate(RoutesEnum.Validitys),
         },
         {
           key: "validity2",

@@ -117,7 +117,7 @@ const Dashboard = () => {
       }));
 
       const aVencer = loja.validitys.filter((validade: ValidityType) => {
-        const diferenca = validade.date - date.getTime();
+        const diferenca = Number(validade.date) - date.getTime();
         const dias = Math.floor(diferenca / (1000 * 60 * 60 * 24));
 
         if (dias >= 0 && dias < 15) {
@@ -128,7 +128,7 @@ const Dashboard = () => {
       });
 
       const vencidos = loja.validitys.filter((validade: ValidityType) => {
-        const diferenca = validade.date - date.getTime();
+        const diferenca = Number(validade.date) - date.getTime();
         const dias = Math.floor(diferenca / (1000 * 60 * 60 * 24));
         const index = Math.abs(dias) - 1;
         if (dias < 0 && index < 15) {

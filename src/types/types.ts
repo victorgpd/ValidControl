@@ -23,7 +23,8 @@ export interface NotificationType {
 export interface ValidityType {
   id: string;
   name: string;
-  date: number;
+  date: string;
+  barcode: string;
   quantity: number;
 }
 
