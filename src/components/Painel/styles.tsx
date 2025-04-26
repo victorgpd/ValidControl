@@ -23,7 +23,7 @@ export const MenuContainer = styled.aside<{ isVisible: boolean }>`
   position: sticky;
   transition: left 0.3s;
 
-  @media screen and (max-width: 920px) {
+  @media screen and (max-width: 1060px) {
     height: calc(100% - 62px);
     position: fixed;
     top: 62px;

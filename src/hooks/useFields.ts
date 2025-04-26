@@ -1,14 +1,14 @@
 import { arrayRemove, arrayUnion, doc, updateDoc } from "firebase/firestore";
 import { useCallback, useState } from "react";
 import { db } from "../firebase/config";
-import { ProductType } from "../types/types";
+import { ProductType, ValidityType } from "../types/types";
 
 export const useFields = (collectionName: string) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const addItemToArray = useCallback(
-    async (docId: string, field: string, itemToAdd: ProductType) => {
+    async (docId: string, field: string, itemToAdd: ProductType | ValidityType) => {
       setLoading(true);
       setError(null);
       try {
@@ -26,7 +26,7 @@ export const useFields = (collectionName: string) => {
   );
 
   const updateFieldValue = useCallback(
-    async (docId: string, field: string, newValue: ProductType[]) => {
+    async (docId: string, field: string, newValue: ProductType[] | ValidityType[]) => {
       setLoading(true);
       setError(null);
       try {

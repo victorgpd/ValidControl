@@ -11,6 +11,7 @@ import { useAppDispatch, useAppSelector } from "../../../../hooks/store";
 import { setOpenCurrentMenu } from "../../../../redux/globalReducer/slice";
 import { AppstoreAddOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { ButtonAdd, ButtonsTable, ContainerButtonsTable, ValiditysPage, TableContainer } from "./styles";
+import { useModal } from "../../../../hooks/useModal";
 
 const Validitys = () => {
   useTitle("Validades");
@@ -18,6 +19,7 @@ const Validitys = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
+  const { openModal, Modal } = useModal();
   const { loja } = useAppSelector((state) => state.globalReducer);
 
   const columns = [
@@ -73,7 +75,15 @@ const Validitys = () => {
   async function handleRemove(docId: string | undefined, itemToRemove: ProductType) {
     if (!docId) return;
 
-    await removeItemFromArray(docId, "validitys", itemToRemove);
+    openModal({
+      title: "Excluir validade",
+      message: `Tem certeza que deseja excluir a validade?<br />ID: ${itemToRemove.id}<br />Produto: ${itemToRemove.name}?`,
+      okText: "Excluir",
+      cancelText: "Cancelar",
+      onConfirm: async () => {
+        await removeItemFromArray(docId, "validitys", itemToRemove);
+      },
+    });
   }
 
   useEffect(() => {
@@ -83,6 +93,7 @@ const Validitys = () => {
   return (
     <Painel>
       <ValiditysPage>
+        <Modal />
         <h2>Validades cadastrades</h2>
         <TableContainer>
           <ButtonAdd icon={<AppstoreAddOutlined />} onClick={() => navigate(RoutesEnum.Validitys_Create)} color="primary" variant="solid">

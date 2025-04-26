@@ -53,7 +53,18 @@ const Login = () => {
           <LoginContent>
             <LoginTitle>Login</LoginTitle>
             <LoginForm onSubmit={handleLogin}>
-              <Input variant="underlined" prefix={<UserOutlined />} style={{ fontSize: "15px" }} type="email" id="email" name="email" placeholder="Email" value={login.email} onChange={handleChange} />
+              <Input
+                variant="underlined"
+                prefix={<UserOutlined />}
+                style={{ fontSize: "15px" }}
+                type="email"
+                id="email"
+                name="email"
+                placeholder="Email"
+                value={login.email}
+                onChange={handleChange}
+                required
+              />
 
               <Input
                 variant="underlined"
@@ -65,6 +76,7 @@ const Login = () => {
                 placeholder="Senha"
                 value={login.password}
                 onChange={handleChange}
+                required
               />
 
               <Button htmlType="submit" color="cyan" loading={loading} variant="solid">

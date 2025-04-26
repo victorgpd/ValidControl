@@ -17,7 +17,7 @@ const ProductManager = () => {
 
   const { id } = useParams();
   const [product, setProduct] = useState<ProductType>({
-    id: "",
+    id: 0,
     name: "",
     barcode: "",
   });
@@ -32,14 +32,13 @@ const ProductManager = () => {
       navigate(RoutesEnum.Product_Create);
       dispatch(setOpenCurrentMenu(["products", "product2"]));
       setEdit(false);
-    } else if (loja?.products && loja?.products?.filter((product) => product.id === id).length <= 0) {
+    } else if (loja?.products && loja?.products?.filter((product) => product.id === Number(id)).length <= 0) {
       navigate(RoutesEnum.Products);
     } else {
       dispatch(setOpenCurrentMenu(["products", "product1"]));
       setEdit(true);
 
-      console.log(loja?.products);
-      const product = loja?.products?.filter((product) => product.id === id);
+      const product = loja?.products?.filter((product) => product.id === Number(id));
       if (product) {
         setProduct(product[0]);
       }
@@ -51,7 +50,7 @@ const ProductManager = () => {
       const newId = loja?.products?.length ? Number(loja?.products[loja?.products?.length - 1].id) + 1 : 1;
       setProduct((prev) => ({
         ...prev,
-        id: newId.toString(),
+        id: newId,
       }));
     }
   }, [loja]);
@@ -86,17 +85,17 @@ const ProductManager = () => {
         <Form onSubmit={handleSubmit}>
           <ContainerInput>
             <Label>ID:</Label>
-            <InputNew size="large" name="id" value={product.id} disabled onChange={handleChange} placeholder="Digite o ID" />
-          </ContainerInput>
-
-          <ContainerInput>
-            <Label>Descrição do Produto:</Label>
-            <InputNew size="large" name="name" value={product.name} onChange={handleChange} placeholder="Digite a descrição" />
+            <InputNew size="large" name="id" value={product.id} disabled onChange={handleChange} placeholder="Digite o ID" required />
           </ContainerInput>
 
           <ContainerInput>
             <Label>Código de Barras:</Label>
-            <InputNew size="large" name="barcode" value={product.barcode} onChange={handleChange} placeholder="Digite o código de barras" />
+            <InputNew size="large" name="barcode" value={product.barcode} onChange={handleChange} placeholder="Digite o código de barras" required />
+          </ContainerInput>
+
+          <ContainerInput>
+            <Label>Descrição do Produto:</Label>
+            <InputNew size="large" name="name" value={product.name} onChange={handleChange} placeholder="Digite a descrição" required />
           </ContainerInput>
 
           <ButtonNew htmlType="submit" type="primary" size="large" loading={loading}>

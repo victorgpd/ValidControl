@@ -54,6 +54,7 @@ const Painel = ({ children }: PainelProps) => {
         {
           key: "validity2",
           label: "Cadastrar nova validade",
+          onClick: () => (window.location.href = RoutesEnum.Validitys_Create),
         },
       ],
     },

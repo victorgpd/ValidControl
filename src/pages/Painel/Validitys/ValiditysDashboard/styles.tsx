@@ -17,7 +17,7 @@ export const ValiditysPage = styled.div`
 
 export const TableContainer = styled.div`
   width: 100%;
-  padding: 16px;
+  padding: 15px;
   border-radius: 12px;
 
   background-color: #fff;
@@ -36,6 +36,9 @@ export const ContainerButtonsTable = styled.div`
 `;
 
 export const ButtonsTable = styled(Button)`
+  width: 100%;
+  max-width: 85px;
+
   svg {
     font-size: 16px;
   }

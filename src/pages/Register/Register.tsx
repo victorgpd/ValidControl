@@ -63,8 +63,20 @@ const Register = () => {
                 placeholder="Nome da loja"
                 value={register.nameStore}
                 onChange={handleChange}
+                required
               />
-              <Input variant="underlined" prefix={<UserOutlined />} style={{ fontSize: "15px" }} type="name" id="name" name="name" placeholder="Nome" value={register.name} onChange={handleChange} />
+              <Input
+                variant="underlined"
+                prefix={<UserOutlined />}
+                style={{ fontSize: "15px" }}
+                type="name"
+                id="name"
+                name="name"
+                placeholder="Nome"
+                value={register.name}
+                onChange={handleChange}
+                required
+              />
               <Input
                 variant="underlined"
                 prefix={<UserOutlined />}
@@ -75,6 +87,7 @@ const Register = () => {
                 placeholder="Email"
                 value={register.email}
                 onChange={handleChange}
+                required
               />
 
               <Input
@@ -87,6 +100,7 @@ const Register = () => {
                 placeholder="Senha"
                 value={register.password}
                 onChange={handleChange}
+                required
               />
 
               <Button htmlType="submit" color="cyan" loading={loading} variant="solid">

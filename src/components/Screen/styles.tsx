@@ -37,7 +37,7 @@ export const ButtonMenu = styled.button`
   font-size: 20px;
   display: none;
 
-  @media screen and (max-width: 920px) {
+  @media screen and (max-width: 1060px) {
     &.menu-painel {
       display: inline-block;
     }

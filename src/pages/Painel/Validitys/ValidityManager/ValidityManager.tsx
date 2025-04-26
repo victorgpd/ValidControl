@@ -1,0 +1,211 @@
+import useTitle from "../../../../hooks/useTitle";
+import Painel from "../../../../components/Painel/Painel";
+
+import { Select, Spin } from "antd";
+import { useEffect, useState } from "react";
+import { RoutesEnum } from "../../../../enums/routes";
+import { ValidityType } from "../../../../types/types";
+import { useFields } from "../../../../hooks/useFields";
+import { useNavigate, useParams } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../../../hooks/store";
+import { setOpenCurrentMenu } from "../../../../redux/globalReducer/slice";
+import { Container, Form, InputNew, Label, ButtonNew, ContainerInput, ContainerInputButton } from "./styles";
+import { useModal } from "../../../../hooks/useModal";
+
+const ValidityManager = () => {
+  useTitle("Cadastrar / Editar Validade");
+
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  const { id } = useParams();
+  const [validity, setValidity] = useState<ValidityType>({
+    id: 0,
+    name: "",
+    barcode: "",
+    date: "",
+    quantity: 0,
+  });
+
+  const [edit, setEdit] = useState(false);
+
+  const { loja } = useAppSelector((state) => state.globalReducer);
+  const { addItemToArray, updateFieldValue, loading } = useFields("lojas");
+  const { openModal, Modal } = useModal();
+
+  useEffect(() => {
+    if (!id) {
+      navigate(RoutesEnum.Validitys_Create);
+      dispatch(setOpenCurrentMenu(["validitys", "validity2"]));
+      setEdit(false);
+    } else if (loja?.validitys && loja?.validitys?.filter((validity) => validity.id === Number(id)).length <= 0) {
+      navigate(RoutesEnum.Validitys);
+    } else {
+      dispatch(setOpenCurrentMenu(["validitys", "validity1"]));
+      setEdit(true);
+
+      let validitys = loja?.validitys?.filter((validity) => validity.id === Number(id))[0];
+      if (validitys) {
+        setValidity(validitys);
+      }
+    }
+  }, [loja]);
+
+  useEffect(() => {
+    if (!edit) {
+      const newId = loja?.validitys?.length ? Number(loja?.validitys[loja?.validitys?.length - 1].id) + 1 : 1;
+      setValidity((prev) => ({
+        ...prev,
+        id: newId,
+      }));
+    }
+  }, [loja]);
+
+  const formatDate = (timestamp: number) => {
+    const date = new Date(timestamp);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    setValidity((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleBarcodeChange = (value: string | undefined) => {
+    if (!value) {
+      setValidity((prev) => ({
+        ...prev,
+        barcode: "",
+        name: "",
+      }));
+      return;
+    }
+
+    setValidity((prev) => ({
+      ...prev,
+      barcode: value,
+    }));
+
+    const product = loja?.products?.find((p) => p.barcode === value);
+    if (product) {
+      setValidity((prev) => ({
+        ...prev,
+        name: product.name,
+      }));
+    } else {
+      setValidity((prev) => ({
+        ...prev,
+        name: "",
+      }));
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!loja?.idDocument) return;
+
+    const productExists = loja.products?.some((p) => p.barcode === validity.barcode);
+
+    if (!edit && !productExists) {
+      openModal({
+        title: "Produto não encontrado",
+        message: `O código de barras ${validity.barcode} não está cadastrado. Deseja cadastrar este produto agora?`,
+        okText: "Cadastrar Produto",
+        cancelText: "Cancelar",
+        onConfirm: async () => {
+          const newProductId = loja.products?.length ? Number(loja.products[loja.products.length - 1].id) + 1 : 1;
+          const newProduct = { id: newProductId, name: validity.name, barcode: validity.barcode };
+          await addItemToArray(loja.idDocument!, "products", newProduct);
+
+          await addItemToArray(loja.idDocument!, "validitys", validity);
+          navigate(RoutesEnum.Validitys);
+        },
+      });
+    } else {
+      if (edit) {
+        if (!loja.validitys) return;
+        const updatedProducts = loja.validitys.map((p) => (p.id === validity.id ? validity : p));
+        await updateFieldValue(loja.idDocument, "validitys", updatedProducts);
+      } else {
+        await addItemToArray(loja.idDocument, "validitys", validity);
+      }
+      navigate(RoutesEnum.Validitys);
+    }
+  };
+
+  return (
+    <Painel>
+      <Modal />
+      <Container>
+        <Form onSubmit={handleSubmit}>
+          <ContainerInput>
+            <Label>ID:</Label>
+            <InputNew size="large" name="id" value={validity.id} disabled onChange={handleChange} placeholder="Digite o ID" />
+          </ContainerInput>
+
+          <ContainerInput>
+            <Label>Código de Barras:</Label>
+            <ContainerInputButton>
+              {loja?.products ? (
+                <Select
+                  showSearch
+                  allowClear
+                  size="large"
+                  placeholder="Selecione ou digite o código de barras"
+                  value={validity.barcode || undefined}
+                  onChange={handleBarcodeChange}
+                  onSearch={(text) => {
+                    setValidity((prev) => ({
+                      ...prev,
+                      barcode: text,
+                    }));
+                  }}
+                  options={[
+                    ...(loja.products?.map((product) => ({
+                      value: product.barcode,
+                      label: `${product.name} (${product.barcode})`,
+                    })) || []),
+                    ...(validity.barcode && !loja.products?.some((p) => p.barcode === validity.barcode) ? [{ value: validity.barcode, label: `Novo código: ${validity.barcode}` }] : []),
+                  ]}
+                  filterOption={(input, option) => (option?.label as string).toLowerCase().includes(input.toLowerCase())}
+                  style={{ width: "100%" }}
+                  optionLabelProp="value"
+                />
+              ) : (
+                <Spin spinning />
+              )}
+            </ContainerInputButton>
+          </ContainerInput>
+
+          <ContainerInput>
+            <Label>Descrição do Produto:</Label>
+            <InputNew size="large" name="name" value={validity.name} onChange={handleChange} placeholder="Digite a descrição" />
+          </ContainerInput>
+
+          <ContainerInput>
+            <Label>Quant. de Produtos:</Label>
+            <InputNew type="number" size="large" name="quantity" value={validity.quantity} onChange={handleChange} placeholder="Digite a quantidade" />
+          </ContainerInput>
+
+          <ContainerInput>
+            <Label>Data de Validade:</Label>
+            <InputNew type="date" size="large" name="date" value={edit ? formatDate(Number(validity.date)) : validity.date} onChange={handleChange} />
+          </ContainerInput>
+
+          <ButtonNew htmlType="submit" type="primary" size="large" loading={loading}>
+            {edit ? "Editar" : "Cadastrar"} Produto
+          </ButtonNew>
+        </Form>
+      </Container>
+    </Painel>
+  );
+};
+
+export default ValidityManager;

@@ -21,7 +21,7 @@ export interface NotificationType {
 }
 
 export interface ValidityType {
-  id: string;
+  id: number;
   name: string;
   date: string;
   barcode: string;
@@ -29,7 +29,7 @@ export interface ValidityType {
 }
 
 export interface ProductType {
-  id: string;
+  id: number;
   name: string;
   barcode: string;
 }

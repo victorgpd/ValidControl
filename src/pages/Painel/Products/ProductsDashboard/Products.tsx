@@ -11,12 +11,15 @@ import { useAppDispatch, useAppSelector } from "../../../../hooks/store";
 import { setOpenCurrentMenu } from "../../../../redux/globalReducer/slice";
 import { AppstoreAddOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { ButtonAdd, ButtonsTable, ContainerButtonsTable, ProductsPage, TableContainer } from "./styles";
+import { useModal } from "../../../../hooks/useModal";
 
 const Products = () => {
   useTitle("Produtos");
+  
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
+  const { openModal, Modal } = useModal();
   const { loja } = useAppSelector((state) => state.globalReducer);
 
   const columns = [
@@ -61,7 +64,15 @@ const Products = () => {
   async function handleRemove(docId: string | undefined, itemToRemove: ProductType) {
     if (!docId) return;
 
-    await removeItemFromArray(docId, "products", itemToRemove);
+    openModal({
+      title: "Excluir produto",
+      message: `Tem certeza que deseja excluir o produto?<br />ID: ${itemToRemove.id}<br />Produto: ${itemToRemove.name}?`,
+      okText: "Excluir",
+      cancelText: "Cancelar",
+      onConfirm: async () => {
+        await removeItemFromArray(docId, "products", itemToRemove);
+      },
+    });
   }
 
   useEffect(() => {
@@ -71,6 +82,7 @@ const Products = () => {
   return (
     <Painel>
       <ProductsPage>
+        <Modal />
         <h2>Produtos cadastrados</h2>
         <TableContainer>
           <ButtonAdd icon={<AppstoreAddOutlined />} onClick={() => navigate(RoutesEnum.Product_Create)} color="primary" variant="solid">
