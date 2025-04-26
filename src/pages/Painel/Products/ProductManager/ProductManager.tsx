@@ -1,14 +1,17 @@
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { ProductType } from "../../../../types/types";
+import useTitle from "../../../../hooks/useTitle";
 import Painel from "../../../../components/Painel/Painel";
-import { Container, Form, InputNew, Label, ButtonNew, ContainerInput } from "./styles";
+
+import { useEffect, useState } from "react";
+import { ProductType } from "../../../../types/types";
 import { RoutesEnum } from "../../../../enums/routes";
+import { useFields } from "../../../../hooks/useFields";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../../hooks/store";
 import { setOpenCurrentMenu } from "../../../../redux/globalReducer/slice";
-import { useFields } from "../../../../hooks/useFields";
+import { Container, Form, InputNew, Label, ButtonNew, ContainerInput } from "./styles";
 
 const ProductManager = () => {
+  useTitle("Cadastrar / Editar Produto");
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 

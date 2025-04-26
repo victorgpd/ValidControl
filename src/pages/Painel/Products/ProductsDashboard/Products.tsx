@@ -1,17 +1,19 @@
+import useTitle from "../../../../hooks/useTitle";
 import Table from "../../../../components/Table/Table";
 import Painel from "../../../../components/Painel/Painel";
 
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { ProductType } from "../../../../types/types";
+import { RoutesEnum } from "../../../../enums/routes";
 import { useFields } from "../../../../hooks/useFields";
 import { useAppDispatch, useAppSelector } from "../../../../hooks/store";
 import { setOpenCurrentMenu } from "../../../../redux/globalReducer/slice";
 import { AppstoreAddOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { ButtonAdd, ButtonsTable, ContainerButtonsTable, ProductsPage, TableContainer } from "./styles";
-import { useNavigate } from "react-router-dom";
-import { RoutesEnum } from "../../../../enums/routes";
 
 const Products = () => {
+  useTitle("Produtos");
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 

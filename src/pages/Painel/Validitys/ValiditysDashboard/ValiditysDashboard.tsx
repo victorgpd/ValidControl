@@ -1,3 +1,4 @@
+import useTitle from "../../../../hooks/useTitle";
 import Table from "../../../../components/Table/Table";
 import Painel from "../../../../components/Painel/Painel";
 
@@ -12,6 +13,8 @@ import { AppstoreAddOutlined, DeleteOutlined, EditOutlined } from "@ant-design/i
 import { ButtonAdd, ButtonsTable, ContainerButtonsTable, ValiditysPage, TableContainer } from "./styles";
 
 const Validitys = () => {
+  useTitle("Validades");
+
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
