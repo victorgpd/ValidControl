@@ -90,11 +90,11 @@ const Painel = ({ children }: PainelProps) => {
   const { logout } = useAuthentication();
   const { user } = useAppSelector((state) => state.globalReducer);
 
-  const conditions: { field: string; op: WhereFilterOp; value: string }[] = [
+  const conditions: { field: string; op: WhereFilterOp; value: any }[] = [
     {
       field: "access",
       op: "array-contains",
-      value: user?.email || "",
+      value: { name: user?.name!, email: user?.email! },
     },
   ];
 

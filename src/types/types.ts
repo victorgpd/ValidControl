@@ -4,13 +4,14 @@ export interface UserType {
   email: string;
   password: string;
   name?: string;
-  nameStore?: string;
   uid?: string;
+  nameStore?: string;
 }
 
 export interface UserLoggedType {
   uid: string | null;
   name: string | null;
+  image: string | null;
   email: string | null;
 }
 

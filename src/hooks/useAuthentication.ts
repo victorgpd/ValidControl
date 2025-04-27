@@ -13,7 +13,7 @@ import { RoutesEnum } from "../enums/routes";
 const useAuthentication = () => {
   const dispatch = useAppDispatch();
 
-  const { insertDocument } = useDocument("lojas");
+  const { insertDocument: insertStore } = useDocument("lojas");
   const { showNotification } = useNotification();
 
   const [error, setError] = useState<string | null>(null);
@@ -33,7 +33,7 @@ const useAuthentication = () => {
       const result = await signInWithEmailAndPassword(auth, email, password);
       const user = result.user;
 
-      dispatch(setUser({ name: user.displayName, email: user.email, uid: user.uid }));
+      dispatch(setUser({ name: user.displayName, email: user.email, uid: user.uid, image: user.photoURL }));
       showNotification("success", "Sucesso", "Login realizado com sucesso.");
 
       return true;
@@ -68,7 +68,7 @@ const useAuthentication = () => {
   const logout = () => {
     if (cancelled) return;
 
-    dispatch(setUser({ name: null, email: null, uid: null }));
+    dispatch(setUser({ name: null, email: null, uid: null, image: null }));
     signOut(auth);
   };
 
@@ -96,9 +96,9 @@ const useAuthentication = () => {
         createdAt: Timestamp.now(),
       };
 
-      await insertDocument(loja);
+      await insertStore(loja);
 
-      dispatch(setUser({ name: data.displayName, email: data.email, uid: data.uid }));
+      dispatch(setUser({ name: data.displayName, email: data.email, uid: data.uid, image: null }));
 
       showNotification("success", "Sucesso", "Cadastro realizado com sucesso.");
 
@@ -125,10 +125,10 @@ const useAuthentication = () => {
   const watchAuthState = (navigate?: (path: string) => void) => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        dispatch(setUser({ name: user.displayName, email: user.email, uid: user.uid }));
+        dispatch(setUser({ name: user.displayName, email: user.email, uid: user.uid, image: user.photoURL }));
         if (navigate) navigate(RoutesEnum.Home);
       } else {
-        dispatch(setUser({ name: null, email: null, uid: null }));
+        dispatch(setUser({ name: null, email: null, uid: null, image: null }));
       }
     });
 
@@ -140,10 +140,10 @@ const useAuthentication = () => {
       const unsubscribe = onAuthStateChanged(auth, (user) => {
         unsubscribe(); // evitar múltiplas chamadas
         if (user) {
-          dispatch(setUser({ name: user.displayName, email: user.email, uid: user.uid }));
+          dispatch(setUser({ name: user.displayName, email: user.email, uid: user.uid, image: user.photoURL }));
           resolve(null); // deixa o loader continuar
         } else {
-          dispatch(setUser({ name: null, email: null, uid: null }));
+          dispatch(setUser({ name: null, email: null, uid: null, image: null }));
           resolve(redirect(RoutesEnum.Login)); // redireciona
         }
       });
@@ -154,9 +154,9 @@ const useAuthentication = () => {
     setIsCheckingAuth(true);
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        dispatch(setUser({ name: user.displayName, email: user.email, uid: user.uid }));
+        dispatch(setUser({ name: user.displayName, email: user.email, uid: user.uid, image: user.photoURL }));
       } else {
-        dispatch(setUser({ name: null, email: null, uid: null }));
+        dispatch(setUser({ name: null, email: null, uid: null, image: null }));
       }
       setIsCheckingAuth(false);
     });
