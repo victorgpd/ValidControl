@@ -100,7 +100,8 @@ const Dashboard = () => {
     if (typeof date === "string") {
       return new Date(date).toLocaleDateString("pt-BR");
     }
-    return date.toDate().toLocaleDateString("pt-BR");
+    const localDate = new Date(date + "T00:00:00"); // Adiciona um horário para evitar problemas de fuso horário
+    return localDate.toLocaleDateString("pt-BR");
   }
 
   useEffect(() => {
@@ -117,7 +118,9 @@ const Dashboard = () => {
       }));
 
       const aVencer = loja.validitys.filter((validade: ValidityType) => {
-        const diferenca = Number(validade.date) - date.getTime();
+        const dataValidity = new Date(validade.date + "T00:00:00"); // Adiciona um horário para evitar problemas de fuso horário
+
+        const diferenca = dataValidity.getTime() - date.getTime();
         const dias = Math.floor(diferenca / (1000 * 60 * 60 * 24));
 
         if (dias >= 0 && dias < 15) {
@@ -128,7 +131,9 @@ const Dashboard = () => {
       });
 
       const vencidos = loja.validitys.filter((validade: ValidityType) => {
-        const diferenca = Number(validade.date) - date.getTime();
+        const dataValidity = new Date(validade.date + "T00:00:00"); // Adiciona um horário para evitar problemas de fuso horário
+
+        const diferenca = dataValidity.getTime() - date.getTime();
         const dias = Math.floor(diferenca / (1000 * 60 * 60 * 24));
         const index = Math.abs(dias) - 1;
         if (dias < 0 && index < 15) {

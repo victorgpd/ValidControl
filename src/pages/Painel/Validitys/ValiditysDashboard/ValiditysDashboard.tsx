@@ -50,7 +50,10 @@ const Validitys = () => {
       title: "Data de validade",
       dataIndex: "date",
       key: "date",
-      render: (date: string) => new Date(date).toLocaleDateString("pt-BR"),
+      render: (date: string) => {
+        const localDate = new Date(date + "T00:00:00"); // Adiciona um horário para evitar problemas de fuso horário
+        return localDate.toLocaleDateString("pt-BR");
+      },
     },
     {
       title: "",
