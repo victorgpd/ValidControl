@@ -4,7 +4,7 @@ import { AuthError, createUserWithEmailAndPassword, getAuth, onAuthStateChanged,
 import { useAppDispatch } from "./store";
 import { setUser } from "../redux/globalReducer/slice";
 import { useNotification } from "./useNotification";
-import { UserType } from "../types/types";
+import { InformacoesType, UserType } from "../types/types";
 import { redirect } from "react-router-dom";
 import { useDocument } from "./useDocument";
 import { Timestamp } from "firebase/firestore";
@@ -84,16 +84,19 @@ const useAuthentication = () => {
         displayName: user.name,
       });
 
-      await insertDocument({
-        store: user.nameStore,
-        name: user.name,
-        uid: data.uid,
-        createdAt: Timestamp.now(),
-        createdBy: user.email,
+      const loja: InformacoesType = {
+        logs: [],
         products: [],
         validitys: [],
-        access: [user.email],
-      });
+        name: user.name!,
+        lengthBarcode: 0,
+        access: [{ name: user.name!, email: user.email }],
+        createdBy: user.email,
+        store: user.nameStore!,
+        createdAt: Timestamp.now(),
+      };
+
+      await insertDocument(loja);
 
       dispatch(setUser({ name: data.displayName, email: data.email, uid: data.uid }));
 

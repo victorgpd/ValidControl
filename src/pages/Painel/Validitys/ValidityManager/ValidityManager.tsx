@@ -134,7 +134,7 @@ const ValidityManager = () => {
       if (edit) {
         if (!loja.validitys) return;
         const updatedProducts = loja.validitys.map((p) => (p.id === validity.id ? validity : p));
-        await updateFieldValue(loja.idDocument, "validitys", updatedProducts);
+        await updateFieldValue(loja.idDocument, "validitys", updatedProducts, validity);
       } else {
         await addItemToArray(loja.idDocument, "validitys", validity);
       }
@@ -241,7 +241,7 @@ const ValidityManager = () => {
           <FormAntd.Item name="date" style={{ width: "100%" }} rules={[{ required: true, message: "Por favor, insira a data de validade!" }]}>
             <ContainerInput>
               <Label>Data de Validade:</Label>
-              <InputNew type="date" size="large" name="date" value={edit ? formatDate(Number(validity.date)) : validity.date} onChange={handleChange} />
+              <InputNew type="date" size="large" name="date" value={!edit ? formatDate(Number(validity.date)) : validity.date} onChange={handleChange} />
             </ContainerInput>
           </FormAntd.Item>
 

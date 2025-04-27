@@ -34,16 +34,25 @@ export interface ProductType {
   barcode: string;
 }
 
+interface LogType {
+  id: number;
+  user: string;
+  date: string;
+  action: string;
+  data: ProductType | ValidityType | string | null;
+}
+
 export interface InformacoesType {
   name: string | null;
   store: string | null;
-  access: string[] | null;
+  logs: LogType[] | null;
   createdBy: string | null;
   lengthBarcode: number | null;
-  aVencer: ValidityType[] | null;
   products: ProductType[] | null;
-  idDocument: string | undefined;
-  vencidos: ValidityType[] | null;
+  idDocument?: string | undefined;
+  aVencer?: ValidityType[] | null;
+  vencidos?: ValidityType[] | null;
   validitys: ValidityType[] | null;
   createdAt: string | Timestamp | null;
+  access: { name: string; email: string }[] | null;
 }
