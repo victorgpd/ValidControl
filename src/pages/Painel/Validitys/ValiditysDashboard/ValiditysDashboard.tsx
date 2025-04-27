@@ -4,14 +4,15 @@ import Painel from "../../../../components/Painel/Painel";
 
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useModal } from "../../../../hooks/useModal";
 import { ProductType } from "../../../../types/types";
 import { RoutesEnum } from "../../../../enums/routes";
 import { useFields } from "../../../../hooks/useFields";
+import { useNotification } from "../../../../hooks/useNotification";
 import { useAppDispatch, useAppSelector } from "../../../../hooks/store";
 import { setOpenCurrentMenu } from "../../../../redux/globalReducer/slice";
 import { AppstoreAddOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { ButtonAdd, ButtonsTable, ContainerButtonsTable, ValiditysPage, TableContainer } from "./styles";
-import { useModal } from "../../../../hooks/useModal";
 
 const Validitys = () => {
   useTitle("Validades");
@@ -19,6 +20,7 @@ const Validitys = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
+  const { showNotification, contextHolder } = useNotification();
   const { openModal, Modal } = useModal();
   const { loja } = useAppSelector((state) => state.globalReducer);
 
@@ -82,6 +84,7 @@ const Validitys = () => {
       cancelText: "Cancelar",
       onConfirm: async () => {
         await removeItemFromArray(docId, "validitys", itemToRemove);
+        showNotification("success", "Sucesso", "Validade excluida com sucesso.");
       },
     });
   }
@@ -92,6 +95,7 @@ const Validitys = () => {
 
   return (
     <Painel>
+      {contextHolder}
       <ValiditysPage>
         <Modal />
         <h2>Validades cadastrades</h2>

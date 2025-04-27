@@ -12,6 +12,7 @@ import { setOpenCurrentMenu } from "../../../../redux/globalReducer/slice";
 import { AppstoreAddOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { ButtonAdd, ButtonsTable, ContainerButtonsTable, ProductsPage, TableContainer } from "./styles";
 import { useModal } from "../../../../hooks/useModal";
+import { useNotification } from "../../../../hooks/useNotification";
 
 const Products = () => {
   useTitle("Produtos");
@@ -19,6 +20,7 @@ const Products = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
+  const { contextHolder, showNotification } = useNotification();
   const { openModal, Modal } = useModal();
   const { loja } = useAppSelector((state) => state.globalReducer);
 
@@ -71,6 +73,7 @@ const Products = () => {
       cancelText: "Cancelar",
       onConfirm: async () => {
         await removeItemFromArray(docId, "products", itemToRemove);
+        showNotification("success", "Sucesso", "Produto excluido com sucesso.");
       },
     });
   }
@@ -81,6 +84,7 @@ const Products = () => {
 
   return (
     <Painel>
+      {contextHolder}
       <ProductsPage>
         <Modal />
         <h2>Produtos cadastrados</h2>

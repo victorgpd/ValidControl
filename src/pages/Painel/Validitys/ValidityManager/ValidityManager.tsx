@@ -18,7 +18,6 @@ const ValidityManager = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const { id } = useParams();
   const [validity, setValidity] = useState<ValidityType>({
     id: 0,
     name: "",
@@ -28,10 +27,12 @@ const ValidityManager = () => {
   });
 
   const [edit, setEdit] = useState(false);
+  const [disabled, setDisabled] = useState(false);
 
+  const { id } = useParams();
+  const { openModal, Modal } = useModal();
   const { loja } = useAppSelector((state) => state.globalReducer);
   const { addItemToArray, updateFieldValue, loading } = useFields("lojas");
-  const { openModal, Modal } = useModal();
 
   useEffect(() => {
     if (!id) {
@@ -99,16 +100,17 @@ const ValidityManager = () => {
         ...prev,
         name: product.name,
       }));
+      setDisabled(true);
     } else {
       setValidity((prev) => ({
         ...prev,
         name: "",
       }));
+      setDisabled(false);
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     if (!loja?.idDocument) return;
 
     const productExists = loja.products?.some((p) => p.barcode === validity.barcode);
@@ -160,7 +162,7 @@ const ValidityManager = () => {
             </ContainerInput>
           </FormAntd.Item>
 
-          <FormAntd.Item name="barcode" style={{ width: "100%" }} rules={[{ required: true, message: "Por favor, selecione o código de barras!" }]}>
+          <FormAntd.Item name="barcode" style={{ width: "100%" }} rules={[{ required: false, message: "Por favor, selecione o código de barras!" }]}>
             <ContainerInput>
               <Label>Código de Barras:</Label>
               <ContainerInputButton>
@@ -171,12 +173,38 @@ const ValidityManager = () => {
                     size="large"
                     placeholder="Selecione ou digite o código de barras"
                     value={validity.barcode || undefined}
-                    onChange={handleBarcodeChange}
+                    onChange={(value) => handleBarcodeChange(value)}
                     onSearch={(text) => {
                       setValidity((prev) => ({
                         ...prev,
                         barcode: text,
                       }));
+                      const product = loja?.products?.find((p) => p.barcode === text);
+                      if (product) {
+                        setValidity((prev) => ({
+                          ...prev,
+                          name: product.name,
+                        }));
+                        setDisabled(true);
+                      } else {
+                        setValidity((prev) => ({
+                          ...prev,
+                          name: "",
+                        }));
+                        setDisabled(false);
+                      }
+                    }}
+                    onSelect={(value) => {
+                      // Lógica para preencher o nome do produto ao selecionar o código de barras
+                      const product = loja?.products?.find((p) => p.barcode === value);
+                      if (product) {
+                        setValidity((prev) => ({
+                          ...prev,
+                          barcode: value,
+                          name: product.name,
+                        }));
+                        setDisabled(true);
+                      }
                     }}
                     options={[
                       ...(loja.products?.map((product) => ({
@@ -196,10 +224,10 @@ const ValidityManager = () => {
             </ContainerInput>
           </FormAntd.Item>
 
-          <FormAntd.Item name="name" style={{ width: "100%" }} rules={[{ required: true, message: "Por favor, insira a descrição do produto!" }]}>
+          <FormAntd.Item name="name" style={{ width: "100%" }} rules={[{ required: false, message: "Por favor, insira a descrição do produto!" }]}>
             <ContainerInput>
               <Label>Descrição do Produto:</Label>
-              <InputNew size="large" name="name" value={validity.name} onChange={handleChange} placeholder="Digite a descrição" />
+              <InputNew disabled={disabled} size="large" name="name" value={validity.name} onChange={handleChange} placeholder="Digite a descrição" required />
             </ContainerInput>
           </FormAntd.Item>
 
