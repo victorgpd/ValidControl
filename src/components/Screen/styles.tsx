@@ -104,6 +104,8 @@ export const UserButton = styled.div`
 export const MenuUser = styled(Dropdown)``;
 
 export const MainContainer = styled.main`
+  width: 100%;
+
   flex: 1;
   padding-top: 62px;
   background-color: #f0f4f8;

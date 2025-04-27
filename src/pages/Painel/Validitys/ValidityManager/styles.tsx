@@ -11,16 +11,11 @@ export const Container = styled.div`
   justify-content: center;
 `;
 
-export const Form = styled.form`
-  width: 100%;
-  max-width: 400px;
-
-  gap: 16px;
-  display: flex;
-  flex-direction: column;
-`;
+export const Form = styled.form``;
 
 export const ContainerInput = styled.div`
+  width: 100%;
+
   gap: 5px;
   display: flex;
   flex-direction: column;

@@ -12,4 +12,6 @@ export enum RoutesEnum {
   Validitys = "/painel/validitys",
   Validitys_Create = "/painel/validitys/create",
   Validitys_Edit = "/painel/validitys/edit/:id",
+
+  Data_Import = "/painel/data/import",
 }

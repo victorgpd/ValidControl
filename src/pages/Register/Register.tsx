@@ -10,6 +10,7 @@ import { LockOutlined, ShopOutlined, UserOutlined } from "@ant-design/icons";
 import { Image, ImageContainer, RegisterContainer, RegisterContent, RegisterForm, RegisterPage, RegisterTitle } from "./styles";
 import useTitle from "../../hooks/useTitle";
 import { RoutesEnum } from "../../enums/routes";
+import { useNotification } from "../../hooks/useNotification";
 
 const Register = () => {
   useTitle("Cadastrar-se");
@@ -22,6 +23,7 @@ const Register = () => {
     password: "",
   });
 
+  const { contextHolder } = useNotification();
   const { register: RegisterFirebase, watchAuthState, loading } = useAuthentication();
 
   useEffect(() => {
@@ -44,6 +46,7 @@ const Register = () => {
 
   return (
     <Screen>
+      {contextHolder}
       <RegisterPage>
         <RegisterContainer>
           <ImageContainer>

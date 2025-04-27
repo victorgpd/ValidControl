@@ -15,7 +15,7 @@ import { useModal } from "../../../../hooks/useModal";
 
 const Products = () => {
   useTitle("Produtos");
-  
+
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
@@ -26,7 +26,7 @@ const Products = () => {
     {
       title: "ID",
       dataIndex: "id",
-      key: "id",
+      rowScope: "row",
       render: (id: string) => <span style={{ color: "#1677ff" }}>{id}</span>,
     },
     {
@@ -88,7 +88,7 @@ const Products = () => {
           <ButtonAdd icon={<AppstoreAddOutlined />} onClick={() => navigate(RoutesEnum.Product_Create)} color="primary" variant="solid">
             Novo
           </ButtonAdd>
-          {loja?.products && <Table dataSource={loja?.products} columns={columns} />}
+          {loja?.products && <Table dataSource={loja?.products} columns={columns} rowKey="id" />}
         </TableContainer>
       </ProductsPage>
     </Painel>

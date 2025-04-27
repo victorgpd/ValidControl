@@ -26,7 +26,7 @@ const Validitys = () => {
     {
       title: "ID",
       dataIndex: "id",
-      key: "id",
+      rowScope: "row",
       render: (id: string) => <span style={{ color: "#1677ff" }}>{id}</span>,
     },
     {
@@ -99,7 +99,7 @@ const Validitys = () => {
           <ButtonAdd icon={<AppstoreAddOutlined />} onClick={() => navigate(RoutesEnum.Validitys_Create)} color="primary" variant="solid">
             Novo
           </ButtonAdd>
-          {loja?.validitys && <Table dataSource={loja?.validitys} columns={columns} />}
+          {loja?.validitys && <Table dataSource={loja?.validitys} columns={columns} rowKey="id" />}
         </TableContainer>
       </ValiditysPage>
     </Painel>

@@ -1,16 +1,16 @@
 import useTitle from "../../../../hooks/useTitle";
 import Painel from "../../../../components/Painel/Painel";
 
-import { Select, Spin } from "antd";
 import { useEffect, useState } from "react";
+import { useModal } from "../../../../hooks/useModal";
+import { Select, Spin, Form as FormAntd } from "antd";
 import { RoutesEnum } from "../../../../enums/routes";
 import { ValidityType } from "../../../../types/types";
 import { useFields } from "../../../../hooks/useFields";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../../hooks/store";
 import { setOpenCurrentMenu } from "../../../../redux/globalReducer/slice";
-import { Container, Form, InputNew, Label, ButtonNew, ContainerInput, ContainerInputButton } from "./styles";
-import { useModal } from "../../../../hooks/useModal";
+import { Container, InputNew, Label, ButtonNew, ContainerInput, ContainerInputButton } from "./styles";
 
 const ValidityManager = () => {
   useTitle("Cadastrar / Editar Validade");
@@ -144,65 +144,83 @@ const ValidityManager = () => {
     <Painel>
       <Modal />
       <Container>
-        <Form onSubmit={handleSubmit}>
-          <ContainerInput>
-            <Label>ID:</Label>
-            <InputNew size="large" name="id" value={validity.id} disabled onChange={handleChange} placeholder="Digite o ID" />
-          </ContainerInput>
+        <FormAntd
+          style={{
+            width: "100%",
+            maxWidth: "400px",
+            display: "flex",
+            flexDirection: "column",
+          }}
+          onFinish={handleSubmit}
+        >
+          <FormAntd.Item name="id" style={{ width: "100%" }}>
+            <ContainerInput>
+              <Label>ID:</Label>
+              <InputNew size="large" name="id" value={validity.id} disabled onChange={handleChange} placeholder="Digite o ID" />
+            </ContainerInput>
+          </FormAntd.Item>
 
-          <ContainerInput>
-            <Label>Código de Barras:</Label>
-            <ContainerInputButton>
-              {loja?.products ? (
-                <Select
-                  showSearch
-                  allowClear
-                  size="large"
-                  placeholder="Selecione ou digite o código de barras"
-                  value={validity.barcode || undefined}
-                  onChange={handleBarcodeChange}
-                  onSearch={(text) => {
-                    setValidity((prev) => ({
-                      ...prev,
-                      barcode: text,
-                    }));
-                  }}
-                  options={[
-                    ...(loja.products?.map((product) => ({
-                      value: product.barcode,
-                      label: `${product.name} (${product.barcode})`,
-                    })) || []),
-                    ...(validity.barcode && !loja.products?.some((p) => p.barcode === validity.barcode) ? [{ value: validity.barcode, label: `Novo código: ${validity.barcode}` }] : []),
-                  ]}
-                  filterOption={(input, option) => (option?.label as string).toLowerCase().includes(input.toLowerCase())}
-                  style={{ width: "100%" }}
-                  optionLabelProp="value"
-                />
-              ) : (
-                <Spin spinning />
-              )}
-            </ContainerInputButton>
-          </ContainerInput>
+          <FormAntd.Item name="barcode" style={{ width: "100%" }} rules={[{ required: true, message: "Por favor, selecione o código de barras!" }]}>
+            <ContainerInput>
+              <Label>Código de Barras:</Label>
+              <ContainerInputButton>
+                {loja?.products ? (
+                  <Select
+                    showSearch
+                    allowClear
+                    size="large"
+                    placeholder="Selecione ou digite o código de barras"
+                    value={validity.barcode || undefined}
+                    onChange={handleBarcodeChange}
+                    onSearch={(text) => {
+                      setValidity((prev) => ({
+                        ...prev,
+                        barcode: text,
+                      }));
+                    }}
+                    options={[
+                      ...(loja.products?.map((product) => ({
+                        value: product.barcode,
+                        label: `${product.name} (${product.barcode})`,
+                      })) || []),
+                      ...(validity.barcode && !loja.products?.some((p) => p.barcode === validity.barcode) ? [{ value: validity.barcode, label: `Novo código: ${validity.barcode}` }] : []),
+                    ]}
+                    filterOption={(input, option) => (option?.label as string).toLowerCase().includes(input.toLowerCase())}
+                    style={{ width: "100%" }}
+                    optionLabelProp="value"
+                  />
+                ) : (
+                  <Spin spinning />
+                )}
+              </ContainerInputButton>
+            </ContainerInput>
+          </FormAntd.Item>
 
-          <ContainerInput>
-            <Label>Descrição do Produto:</Label>
-            <InputNew size="large" name="name" value={validity.name} onChange={handleChange} placeholder="Digite a descrição" />
-          </ContainerInput>
+          <FormAntd.Item name="name" style={{ width: "100%" }} rules={[{ required: true, message: "Por favor, insira a descrição do produto!" }]}>
+            <ContainerInput>
+              <Label>Descrição do Produto:</Label>
+              <InputNew size="large" name="name" value={validity.name} onChange={handleChange} placeholder="Digite a descrição" />
+            </ContainerInput>
+          </FormAntd.Item>
 
-          <ContainerInput>
-            <Label>Quant. de Produtos:</Label>
-            <InputNew type="number" size="large" name="quantity" value={validity.quantity} onChange={handleChange} placeholder="Digite a quantidade" />
-          </ContainerInput>
+          <FormAntd.Item name="quantity" style={{ width: "100%" }} rules={[{ required: true, min: 1, message: "Por favor, insira a quantidade!" }]}>
+            <ContainerInput>
+              <Label>Quant. de Produtos:</Label>
+              <InputNew type="number" size="large" name="quantity" value={validity.quantity} onChange={handleChange} placeholder="Digite a quantidade" />
+            </ContainerInput>
+          </FormAntd.Item>
 
-          <ContainerInput>
-            <Label>Data de Validade:</Label>
-            <InputNew type="date" size="large" name="date" value={edit ? formatDate(Number(validity.date)) : validity.date} onChange={handleChange} />
-          </ContainerInput>
+          <FormAntd.Item name="date" style={{ width: "100%" }} rules={[{ required: true, message: "Por favor, insira a data de validade!" }]}>
+            <ContainerInput>
+              <Label>Data de Validade:</Label>
+              <InputNew type="date" size="large" name="date" value={edit ? formatDate(Number(validity.date)) : validity.date} onChange={handleChange} />
+            </ContainerInput>
+          </FormAntd.Item>
 
           <ButtonNew htmlType="submit" type="primary" size="large" loading={loading}>
             {edit ? "Editar" : "Cadastrar"} Produto
           </ButtonNew>
-        </Form>
+        </FormAntd>
       </Container>
     </Painel>
   );

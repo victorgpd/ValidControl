@@ -11,6 +11,7 @@ import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Image, ImageContainer, LoginContainer, LoginContent, LoginForm, LoginPage, LoginTitle } from "./styles";
 import useTitle from "../../hooks/useTitle";
 import { RoutesEnum } from "../../enums/routes";
+import { useNotification } from "../../hooks/useNotification";
 
 const Login = () => {
   useTitle("Login");
@@ -22,6 +23,7 @@ const Login = () => {
     password: "",
   });
 
+  const { contextHolder } = useNotification();
   const { login: loginFirebase, watchAuthState, loading } = useAuthentication();
 
   useEffect(() => {
@@ -45,6 +47,7 @@ const Login = () => {
   return (
     <Screen>
       <LoginPage>
+        {contextHolder}
         <LoginContainer>
           <ImageContainer>
             <Image src={ImageLogin} alt="Logo" />

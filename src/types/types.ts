@@ -39,6 +39,7 @@ export interface InformacoesType {
   store: string | null;
   access: string[] | null;
   createdBy: string | null;
+  lengthBarcode: number | null;
   aVencer: ValidityType[] | null;
   products: ProductType[] | null;
   idDocument: string | undefined;

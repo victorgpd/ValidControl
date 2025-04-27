@@ -8,13 +8,13 @@ export const useFields = (collectionName: string) => {
   const [error, setError] = useState<string | null>(null);
 
   const addItemToArray = useCallback(
-    async (docId: string, field: string, itemToAdd: ProductType | ValidityType) => {
+    async (docId: string, field: string, itemToAdd: ProductType | ValidityType | ProductType[] | ValidityType[]) => {
       setLoading(true);
       setError(null);
       try {
         const docRef = doc(db, collectionName, docId);
         await updateDoc(docRef, {
-          [field]: arrayUnion(itemToAdd),
+          [field]: Array.isArray(itemToAdd) ? arrayUnion(...itemToAdd) : arrayUnion(itemToAdd),
         });
       } catch (err: any) {
         setError(err.message);

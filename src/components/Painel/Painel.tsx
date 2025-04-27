@@ -63,7 +63,7 @@ const Painel = ({ children }: PainelProps) => {
       label: "Gerenciar Dados",
       icon: <DatabaseOutlined />,
       children: [
-        { key: "category1", label: "Importar produtos" },
+        { key: "category1", label: "Importar produtos", onClick: () => navigate(RoutesEnum.Data_Import) },
         { key: "category2", label: "Exportar produtos" },
         { key: "category3", label: "Exportar validades" },
       ],

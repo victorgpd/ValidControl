@@ -4,7 +4,7 @@ import styled from "styled-components";
 export const ProductsPage = styled.div`
   width: 100%;
   height: 100%;
-  padding: 24px;
+  padding: 15px;
   background-color: #f9f9f9;
 
   h2 {

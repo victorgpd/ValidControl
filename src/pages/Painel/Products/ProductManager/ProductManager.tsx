@@ -8,7 +8,8 @@ import { useFields } from "../../../../hooks/useFields";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../../hooks/store";
 import { setOpenCurrentMenu } from "../../../../redux/globalReducer/slice";
-import { Container, Form, InputNew, Label, ButtonNew, ContainerInput } from "./styles";
+import { Container, InputNew, Label, ButtonNew, ContainerInput } from "./styles";
+import { Form as FormAntd } from "antd";
 
 const ProductManager = () => {
   useTitle("Cadastrar / Editar Produto");
@@ -82,26 +83,40 @@ const ProductManager = () => {
   return (
     <Painel>
       <Container>
-        <Form onSubmit={handleSubmit}>
-          <ContainerInput>
-            <Label>ID:</Label>
-            <InputNew size="large" name="id" value={product.id} disabled onChange={handleChange} placeholder="Digite o ID" required />
-          </ContainerInput>
+        <FormAntd
+          style={{
+            width: "100%",
+            maxWidth: "400px",
+            display: "flex",
+            flexDirection: "column",
+          }}
+          onFinish={handleSubmit}
+        >
+          <FormAntd.Item name="id" style={{ width: "100%" }}>
+            <ContainerInput>
+              <Label>ID:</Label>
+              <InputNew size="large" name="id" value={product.id} disabled onChange={handleChange} placeholder="Digite o ID" />
+            </ContainerInput>
+          </FormAntd.Item>
 
-          <ContainerInput>
-            <Label>Código de Barras:</Label>
-            <InputNew size="large" name="barcode" value={product.barcode} onChange={handleChange} placeholder="Digite o código de barras" required />
-          </ContainerInput>
+          <FormAntd.Item name="barcode" style={{ width: "100%" }} rules={[{ required: true, message: "Por favor, insira o código de barras!" }]}>
+            <ContainerInput>
+              <Label>Código de Barras:</Label>
+              <InputNew size="large" name="barcode" value={product.barcode} onChange={handleChange} placeholder="Digite o código de barras" />
+            </ContainerInput>
+          </FormAntd.Item>
 
-          <ContainerInput>
-            <Label>Descrição do Produto:</Label>
-            <InputNew size="large" name="name" value={product.name} onChange={handleChange} placeholder="Digite a descrição" required />
-          </ContainerInput>
+          <FormAntd.Item name="name" style={{ width: "100%" }} rules={[{ required: true, message: "Por favor, insira a descrição do produto!" }]}>
+            <ContainerInput>
+              <Label>Descrição do Produto:</Label>
+              <InputNew size="large" name="name" value={product.name} onChange={handleChange} placeholder="Digite a descrição" />
+            </ContainerInput>
+          </FormAntd.Item>
 
           <ButtonNew htmlType="submit" type="primary" size="large" loading={loading}>
             {edit ? "Editar" : "Cadastrar"} Produto
           </ButtonNew>
-        </Form>
+        </FormAntd>
       </Container>
     </Painel>
   );

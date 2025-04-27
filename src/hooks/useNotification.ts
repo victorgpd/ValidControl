@@ -9,8 +9,9 @@ export const useNotification = () => {
       api[type]({
         message,
         description,
-        placement: "bottomRight",
+        placement: "topRight",
         duration: 5,
+        showProgress: true,
       });
     },
     [api]
