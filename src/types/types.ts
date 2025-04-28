@@ -55,5 +55,6 @@ export interface InformacoesType {
   vencidos?: ValidityType[] | null;
   validitys: ValidityType[] | null;
   createdAt: string | Timestamp | null;
+  updateAt?: string | Timestamp | null;
   access: string[] | null;
 }

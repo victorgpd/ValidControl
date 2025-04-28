@@ -62,14 +62,6 @@ const ValidityManager = () => {
     }
   }, [loja]);
 
-  const formatDate = (timestamp: number) => {
-    const date = new Date(timestamp);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  };
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
@@ -241,7 +233,7 @@ const ValidityManager = () => {
           <FormAntd.Item name="date" style={{ width: "100%" }} rules={[{ required: true, message: "Por favor, insira a data de validade!" }]}>
             <ContainerInput>
               <Label>Data de Validade:</Label>
-              <InputNew type="date" size="large" name="date" value={!edit ? formatDate(Number(validity.date)) : validity.date} onChange={handleChange} />
+              <InputNew type="date" size="large" name="date" value={validity.date} onChange={handleChange} />
             </ContainerInput>
           </FormAntd.Item>
 
