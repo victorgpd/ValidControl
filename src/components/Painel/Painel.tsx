@@ -72,6 +72,7 @@ const Painel = ({ children }: PainelProps) => {
       key: "configuration",
       label: "Configurações",
       icon: <SettingOutlined />,
+      onClick: () => navigate(RoutesEnum.Configuration),
     },
     {
       key: "logout",
@@ -94,7 +95,7 @@ const Painel = ({ children }: PainelProps) => {
     {
       field: "access",
       op: "array-contains",
-      value: { name: user?.name!, email: user?.email! },
+      value: user?.email!,
     },
   ];
 

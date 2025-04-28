@@ -1,3 +1,4 @@
+import useTitle from "../../../../hooks/useTitle";
 import React, { useState } from "react";
 import * as XLSX from "xlsx";
 import Painel from "../../../../components/Painel/Painel";
@@ -10,6 +11,8 @@ import { ProductType } from "../../../../types/types";
 import { useNotification } from "../../../../hooks/useNotification";
 
 const ImportProduct = () => {
+  useTitle("Importar produtos");
+
   const fileInputRef = React.useRef<InputRef>(null);
 
   const [message, setMessage] = useState("Por favor, selecione um arquivo!");

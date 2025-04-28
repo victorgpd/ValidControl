@@ -257,7 +257,7 @@ const Screen = ({ displayMenu, isVisible, children }: ScreenProps) => {
           {isCheckingAuth ? null : user?.uid ? (
             <MenuUser menu={{ items: itemsUser }} placement="bottomRight" arrow>
               <UserButton>
-                <UserOutlined style={{ fontSize: "24px", color: "white" }} />
+                {user.image ? <img src={user.image} style={{ width: "42px", height: "42px", borderRadius: "50%" }} /> : <UserOutlined style={{ fontSize: "24px", color: "white" }} />}
               </UserButton>
             </MenuUser>
           ) : (

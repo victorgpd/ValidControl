@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { app } from "../firebase/config";
-import { AuthError, createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from "firebase/auth";
+import { auth } from "../firebase/config";
+import { AuthError, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from "firebase/auth";
 import { useAppDispatch } from "./store";
 import { setUser } from "../redux/globalReducer/slice";
 import { useNotification } from "./useNotification";
@@ -20,8 +20,6 @@ const useAuthentication = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [cancelled, setCancelled] = useState(false);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
-
-  const auth = getAuth(app);
 
   const login = async (email: string, password: string) => {
     if (cancelled) return;
@@ -82,19 +80,35 @@ const useAuthentication = () => {
 
       await updateProfile(data, {
         displayName: user.name,
+        photoURL: `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name!)}`,
       });
 
-      const loja: InformacoesType = {
-        logs: [],
-        products: [],
-        validitys: [],
-        name: user.name!,
-        lengthBarcode: 0,
-        access: [{ name: user.name!, email: user.email }],
-        createdBy: user.email,
-        store: user.nameStore!,
-        createdAt: Timestamp.now(),
-      };
+      let loja: InformacoesType;
+      if (user.name) {
+        loja = {
+          logs: [],
+          products: [],
+          validitys: [],
+          name: user.name,
+          lengthBarcode: 0,
+          access: [user.email],
+          createdBy: user.email,
+          store: user.nameStore!,
+          createdAt: Timestamp.now(),
+        };
+      } else {
+        loja = {
+          logs: [],
+          products: [],
+          validitys: [],
+          name: null,
+          lengthBarcode: 0,
+          access: [user.email],
+          createdBy: user.email,
+          store: user.nameStore!,
+          createdAt: Timestamp.now(),
+        };
+      }
 
       await insertStore(loja);
 

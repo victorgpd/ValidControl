@@ -10,6 +10,7 @@ import ProductManager from "../pages/Painel/Products/ProductManager/ProductManag
 import Validitys from "../pages/Painel/Validitys/ValiditysDashboard/ValiditysDashboard";
 import ValidityManager from "../pages/Painel/Validitys/ValidityManager/ValidityManager";
 import ImportProduct from "../pages/Painel/Data/ImportProduct/ImportProduct";
+import Configuration from "../pages/Painel/Configuration/Configuration";
 
 export const screensRoutes: RouteObject[] = [
   {
@@ -59,5 +60,9 @@ export const loggedScreensRoutes: RouteObject[] = [
   {
     path: RoutesEnum.Data_Import,
     element: <ImportProduct />,
+  },
+  {
+    path: RoutesEnum.Configuration,
+    element: <Configuration />,
   },
 ];
