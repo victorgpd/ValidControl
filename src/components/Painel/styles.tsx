@@ -4,6 +4,7 @@ import styled from "styled-components";
 export const PainelContainer = styled.div`
   width: 100%;
   height: 100%;
+  padding-left: 240px;
 
   display: flex;
   flex-flow: row;
@@ -20,7 +21,10 @@ export const MenuContainer = styled.aside<{ isVisible: boolean }>`
   flex-direction: column;
   align-items: center;
 
-  position: sticky;
+  position: fixed;
+  top: 62px;
+  left: 0;
+
   transition: left 0.3s;
 
   @media screen and (max-width: 1060px) {

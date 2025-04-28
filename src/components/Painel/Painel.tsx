@@ -1,16 +1,21 @@
-import Screen from "../Screen/Screen";
-import useAuthentication from "../../hooks/useAuthentication";
+import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { MenuProps } from "antd";
-import { useNavigate } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../hooks/store";
-import { useEffect, useMemo, useState } from "react";
-import { Info, InfoContainer, MenuContainer, MenuList, PainelContainer } from "./styles";
 import { CalendarOutlined, DatabaseOutlined, LogoutOutlined, PieChartOutlined, SettingOutlined, ShoppingCartOutlined } from "@ant-design/icons";
-import { RoutesEnum } from "../../enums/routes";
-import { setLoja, setOpenCurrentMenu } from "../../redux/globalReducer/slice";
-import { WhereFilterOp } from "firebase/firestore";
+
+import Screen from "../Screen/Screen";
+
+import { useAppDispatch, useAppSelector } from "../../hooks/store";
 import { useRealtimeDocuments } from "../../hooks/useRealtimeDocuments";
+import useAuthentication from "../../hooks/useAuthentication";
+
+import { setLoja, setOpenCurrentMenu } from "../../redux/globalReducer/slice";
+import { RoutesEnum } from "../../enums/routes";
+
+import { Info, InfoContainer, MenuContainer, MenuList, PainelContainer } from "./styles";
+
+import { WhereFilterOp } from "firebase/firestore";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -22,23 +27,30 @@ const Painel = ({ children }: PainelProps) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const items: MenuItem[] = [
+  const { logout } = useAuthentication();
+  const { user, openCurrentMenu } = useAppSelector((state) => state.globalReducer);
+
+  const conditions = useMemo(() => [{ field: "access", op: "array-contains" as WhereFilterOp, value: user?.email }], [user?.email]);
+  const { documents } = useRealtimeDocuments("lojas", conditions);
+
+  const [isVisible, setIsVisible] = useState(false);
+  const [message, setMessage] = useState("");
+  const [openCurrent, setOpenCurrent] = useState<string[]>(openCurrentMenu);
+
+  const name = useMemo(() => {
+    const firstName = user?.name?.split(" ")[0];
+    return firstName || "";
+  }, [user?.name]);
+
+  const menuItems: MenuItem[] = [
     { key: "dashboard", icon: <PieChartOutlined />, label: "Dashboard", onClick: () => navigate(RoutesEnum.Dashboard) },
     {
       key: "products",
       label: "Produtos",
       icon: <ShoppingCartOutlined />,
       children: [
-        {
-          key: "product1",
-          label: "Produtos cadastrados",
-          onClick: () => navigate(RoutesEnum.Products),
-        },
-        {
-          key: "product2",
-          label: "Cadastrar novo produto",
-          onClick: () => (window.location.href = RoutesEnum.Product_Create),
-        },
+        { key: "product1", label: "Produtos cadastrados", onClick: () => navigate(RoutesEnum.Products) },
+        { key: "product2", label: "Cadastrar novo produto", onClick: () => (window.location.href = RoutesEnum.Product_Create) },
       ],
     },
     {
@@ -46,16 +58,8 @@ const Painel = ({ children }: PainelProps) => {
       label: "Validades",
       icon: <CalendarOutlined />,
       children: [
-        {
-          key: "validity1",
-          label: "Validades cadastradas",
-          onClick: () => navigate(RoutesEnum.Validitys),
-        },
-        {
-          key: "validity2",
-          label: "Cadastrar nova validade",
-          onClick: () => (window.location.href = RoutesEnum.Validitys_Create),
-        },
+        { key: "validity1", label: "Validades cadastradas", onClick: () => navigate(RoutesEnum.Validitys) },
+        { key: "validity2", label: "Cadastrar nova validade", onClick: () => (window.location.href = RoutesEnum.Validitys_Create) },
       ],
     },
     {
@@ -82,48 +86,22 @@ const Painel = ({ children }: PainelProps) => {
     },
   ];
 
-  const { openCurrentMenu } = useAppSelector((state) => state.globalReducer);
-
-  const [isVisible, setIsVisible] = useState<boolean>(false);
-  const [message, setMessage] = useState<string>("");
-  const [openCurrent, setOpenCurrent] = useState<string[]>(openCurrentMenu);
-
-  const { logout } = useAuthentication();
-  const { user } = useAppSelector((state) => state.globalReducer);
-
-  const conditions: { field: string; op: WhereFilterOp; value: any }[] = [
-    {
-      field: "access",
-      op: "array-contains",
-      value: user?.email!,
-    },
-  ];
-
-  const { documents } = useRealtimeDocuments("lojas", conditions);
-
-  const name = useMemo(() => {
-    const nameLocal = user?.name?.split(" ");
-
-    return nameLocal ? nameLocal[0] : "";
-  }, [user?.name]);
-
   useEffect(() => {
     if (documents) {
       dispatch(
         setLoja({
           ...documents,
           idDocument: documents.id,
-          createdAt: documents.createdAt?.toDate().toISOString(), // ou toMillis()
+          createdAt: documents.createdAt?.toDate().toISOString(),
         })
       );
     }
-  }, [documents]);
+  }, [documents, dispatch]);
 
   useEffect(() => {
     const hour = new Date().getHours();
-    const message = hour < 12 ? "Bom dia" : hour < 18 ? "Boa tarde" : "Boa noite";
-
-    setMessage(message);
+    const greeting = hour < 12 ? "Bom dia" : hour < 18 ? "Boa tarde" : "Boa noite";
+    setMessage(greeting);
   }, []);
 
   useEffect(() => {
@@ -139,21 +117,22 @@ const Painel = ({ children }: PainelProps) => {
     dispatch(setOpenCurrentMenu(e.keyPath));
   };
 
-  const handleDisplayMenu = () => {
-    setIsVisible(!isVisible);
+  const toggleMenuVisibility = () => {
+    setIsVisible((prev) => !prev);
   };
 
   return (
-    <Screen isVisible={isVisible} displayMenu={handleDisplayMenu}>
+    <Screen isVisible={isVisible} displayMenu={toggleMenuVisibility}>
       <PainelContainer>
         <MenuContainer isVisible={isVisible}>
           <InfoContainer>
             <Info className="greeting">
-              {message}, {name}👋!
+              {message}, {name} 👋!
             </Info>
             <Info className="welcome">Seja bem-vindo ao seu painel!</Info>
           </InfoContainer>
-          <MenuList onClick={handleClickMenu} style={{ width: 256 }} selectedKeys={openCurrent} mode="inline" theme="dark" items={items} />
+
+          <MenuList onClick={handleClickMenu} style={{ width: 256 }} selectedKeys={openCurrent} mode="inline" theme="dark" items={menuItems} />
         </MenuContainer>
 
         {children}
