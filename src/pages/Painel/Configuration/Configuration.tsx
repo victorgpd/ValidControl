@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { Timestamp } from "firebase/firestore";
 import { auth } from "../../../firebase/config";
 import { updateEmail, updateProfile } from "firebase/auth";
-import { setUser } from "../../../redux/globalReducer/slice";
+import { setOpenCurrentMenu, setUser } from "../../../redux/globalReducer/slice";
 import { useNotification } from "../../../hooks/useNotification";
 import { useAppDispatch, useAppSelector } from "../../../hooks/store";
 import { ConfigurationContainer, ConfigurationPage, ProfileSection, Image, ImageContainer, InputConfiguration, InputsContainer, InputContainer, Label } from "./styles";
@@ -25,6 +25,7 @@ const Configuration = () => {
   const [loadingLoja, setLoadingLoja] = useState(false);
   const [disabledLoja, setDisabledLoja] = useState(true);
   const [disabledInputsLoja, setDisabledInputsLoja] = useState(true);
+
   const [userConfiguration, setUserConfiguration] = useState({
     name: "",
     email: "",
@@ -32,10 +33,18 @@ const Configuration = () => {
     uid: "",
     image: "",
   });
+
   const [lojaConfiguration, setLojaConfiguration] = useState({
     store: "",
     lengthBarcode: 0,
+    access: [] as string[], // <<<<<<<<<< AQUI
   });
+
+  const [newAccessEmail, setNewAccessEmail] = useState("");
+
+  useEffect(() => {
+    dispatch(setOpenCurrentMenu(["configuration"]));
+  }, []);
 
   useEffect(() => {
     if (user) {
@@ -58,6 +67,7 @@ const Configuration = () => {
       setLojaConfiguration({
         store: loja.store ?? "",
         lengthBarcode: loja.lengthBarcode ?? 0,
+        access: loja.access ?? [],
       });
     }
   }, [loja]);
@@ -75,7 +85,7 @@ const Configuration = () => {
   useEffect(() => {
     if (lojaConfiguration.store === "" || lojaConfiguration.store.length < 4 || lojaConfiguration.lengthBarcode === 0 || lojaConfiguration.lengthBarcode < 1) {
       setDisabledLoja(true);
-    } else if (loja?.store !== lojaConfiguration.store || loja?.lengthBarcode !== lojaConfiguration.lengthBarcode) {
+    } else if (loja?.store !== lojaConfiguration.store || loja?.lengthBarcode !== lojaConfiguration.lengthBarcode || JSON.stringify(loja?.access) !== JSON.stringify(lojaConfiguration.access)) {
       setDisabledLoja(false);
     } else {
       setDisabledLoja(true);
@@ -83,12 +93,12 @@ const Configuration = () => {
   }, [lojaConfiguration, loja]);
 
   function formatDate(date: string | Timestamp | null | undefined) {
-    if (!date) return "Indisponível";
+    if (!date) return "Indisponível";
 
     if (typeof date === "string") {
       return new Date(date).toLocaleDateString("pt-BR");
     }
-    const localDate = new Date(date + "T00:00:00"); // Adiciona um horário para evitar problemas de fuso horário
+    const localDate = new Date(date + "T00:00:00");
     return localDate.toLocaleDateString("pt-BR");
   }
 
@@ -104,7 +114,24 @@ const Configuration = () => {
     const { name, value } = e.target;
     setLojaConfiguration((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: name === "lengthBarcode" ? Number(value) : value,
+    }));
+  };
+
+  const handleAddAccessEmail = () => {
+    if (newAccessEmail.trim() !== "" && !lojaConfiguration.access.includes(newAccessEmail.trim())) {
+      setLojaConfiguration((prev) => ({
+        ...prev,
+        access: [...prev.access, newAccessEmail.trim()],
+      }));
+      setNewAccessEmail("");
+    }
+  };
+
+  const handleRemoveAccessEmail = (email: string) => {
+    setLojaConfiguration((prev) => ({
+      ...prev,
+      access: prev.access.filter((e) => e !== email),
     }));
   };
 
@@ -173,6 +200,7 @@ const Configuration = () => {
           </ProfileSection>
 
           <InputsContainer>
+            {/* Inputs do Usuário */}
             <InputContainer>
               <Label>Nome:</Label>
               <InputConfiguration placeholder="Nome" name="name" value={userConfiguration.name} onPressEnter={handleEditProfile} onChange={handleInputChange} />
@@ -204,6 +232,7 @@ const Configuration = () => {
 
           {loja ? (
             <InputsContainer>
+              {/* Inputs da Loja */}
               <InputContainer>
                 <Label>Nome da Loja:</Label>
                 <InputConfiguration name="store" value={lojaConfiguration.store ?? "Não informado"} disabled={disabledInputsLoja} onChange={handleInputLojaChange} />
@@ -212,6 +241,25 @@ const Configuration = () => {
               <InputContainer>
                 <Label>Tamanho do Código de Barras:</Label>
                 <InputConfiguration name="lengthBarcode" type="number" value={lojaConfiguration.lengthBarcode ?? "Não informado"} disabled={disabledInputsLoja} onChange={handleInputLojaChange} />
+              </InputContainer>
+
+              {/* Access Emails */}
+              <InputContainer>
+                <Label>Acesso (Emails):</Label>
+                <div style={{ display: "flex", gap: "8px", marginBottom: "8px" }}>
+                  <InputConfiguration placeholder="Adicionar email" value={newAccessEmail} disabled={disabledInputsLoja} onChange={(e) => setNewAccessEmail(e.target.value)} />
+                  <Button type="primary" disabled={disabledInputsLoja} onClick={handleAddAccessEmail}>
+                    Adicionar
+                  </Button>
+                </div>
+                {lojaConfiguration.access.map((email, index) => (
+                  <div key={index} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "4px" }}>
+                    <InputConfiguration value={email} disabled style={{ flex: 1 }} />
+                    <Button danger onClick={() => handleRemoveAccessEmail(email)} disabled={disabledInputsLoja} style={{ marginLeft: "8px" }}>
+                      Remover
+                    </Button>
+                  </div>
+                ))}
               </InputContainer>
 
               <InputContainer>

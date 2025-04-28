@@ -30,7 +30,6 @@ const Painel = ({ children }: PainelProps) => {
   const { logout } = useAuthentication();
   const { user, openCurrentMenu } = useAppSelector((state) => state.globalReducer);
 
-  // Verifica se o email do usuário está disponível antes de buscar documentos no Firestore
   const conditions = useMemo(() => {
     return user?.email ? [{ field: "access", op: "array-contains" as WhereFilterOp, value: user?.email }] : [];
   }, [user?.email]);
@@ -41,7 +40,6 @@ const Painel = ({ children }: PainelProps) => {
   const [message, setMessage] = useState("");
   const [openCurrent, setOpenCurrent] = useState<string[]>(openCurrentMenu);
 
-  // Obtém o primeiro nome do usuário
   const name = useMemo(() => {
     const firstName = user?.name?.split(" ")[0];
     return firstName || "";
@@ -72,9 +70,9 @@ const Painel = ({ children }: PainelProps) => {
       label: "Gerenciar Dados",
       icon: <DatabaseOutlined />,
       children: [
-        { key: "category1", label: "Importar produtos", onClick: () => navigate(RoutesEnum.Data_Import) },
-        { key: "category2", label: "Exportar produtos" },
-        { key: "category3", label: "Exportar validades" },
+        { key: "data1", label: "Importar produtos", onClick: () => navigate(RoutesEnum.Data_Import) },
+        { key: "data2", label: "Exportar produtos" },
+        { key: "data3", label: "Exportar validades" },
       ],
     },
     {
@@ -91,7 +89,6 @@ const Painel = ({ children }: PainelProps) => {
     },
   ];
 
-  // Efeito para atualizar os dados da loja no Redux quando os documentos mudam
   useEffect(() => {
     if (documents) {
       dispatch(
@@ -99,20 +96,18 @@ const Painel = ({ children }: PainelProps) => {
           ...documents,
           idDocument: documents.id,
           createdAt: documents.createdAt?.toDate().toISOString(),
-          updatedAt: documents.updatedAt?.toDate().toISOString(), // Corrigido de `createdAt` para `updatedAt`
+          updatedAt: documents.updatedAt?.toDate().toISOString(),
         })
       );
     }
   }, [documents, dispatch]);
 
-  // Efeito para configurar a mensagem de boas-vindas com base na hora do dia
   useEffect(() => {
     const hour = new Date().getHours();
     const greeting = hour < 12 ? "Bom dia" : hour < 18 ? "Boa tarde" : "Boa noite";
     setMessage(greeting);
   }, []);
 
-  // Efeito para atualizar a chave do menu atual
   useEffect(() => {
     setOpenCurrent(openCurrentMenu);
   }, [openCurrentMenu]);
@@ -122,12 +117,10 @@ const Painel = ({ children }: PainelProps) => {
     navigate(RoutesEnum.Login);
   }
 
-  // Função para gerenciar o clique no menu e atualizar o estado do Redux
   const handleClickMenu: MenuProps["onClick"] = (e) => {
     dispatch(setOpenCurrentMenu(e.keyPath));
   };
 
-  // Função para alternar a visibilidade do menu
   const toggleMenuVisibility = () => {
     setIsVisible((prev) => !prev);
   };

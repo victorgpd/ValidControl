@@ -1,17 +1,20 @@
 import useTitle from "../../../../hooks/useTitle";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import * as XLSX from "xlsx";
 import Painel from "../../../../components/Painel/Painel";
 import { Container, ContainerInput, ImportProductPage, Label } from "./styles";
 import { Button, Form, Input, InputRef } from "antd";
 import Table from "../../../../components/Table/Table";
 import { useFields } from "../../../../hooks/useFields";
-import { useAppSelector } from "../../../../hooks/store";
+import { useAppDispatch, useAppSelector } from "../../../../hooks/store";
 import { ProductType } from "../../../../types/types";
 import { useNotification } from "../../../../hooks/useNotification";
+import { setOpenCurrentMenu } from "../../../../redux/globalReducer/slice";
 
 const ImportProduct = () => {
   useTitle("Importar produtos");
+
+  const dispatch = useAppDispatch();
 
   const fileInputRef = React.useRef<InputRef>(null);
 
@@ -23,9 +26,9 @@ const ImportProduct = () => {
     barcode: "",
   });
 
+  const { addItemToArray, loading } = useFields("lojas");
   const { showNotification, contextHolder } = useNotification();
   const { loja } = useAppSelector((state) => state.globalReducer);
-  const { addItemToArray, loading } = useFields("lojas");
 
   const columns = [
     {
@@ -44,6 +47,10 @@ const ImportProduct = () => {
       key: "name",
     },
   ];
+
+  useEffect(() => {
+    dispatch(setOpenCurrentMenu(["data", "data1"]));
+  }, []);
 
   const handleFileUpload = () => {
     const file = fileInputRef.current?.input?.files?.[0];
