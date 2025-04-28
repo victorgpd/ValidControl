@@ -97,19 +97,15 @@ const Screen = ({ displayMenu, isVisible, children }: ScreenProps) => {
     },
     {
       key: "3",
-      label: "Perfil",
-      icon: <UserOutlined />,
-    },
-    {
-      key: "4",
       label: "Configurações",
       icon: <SettingOutlined />,
+      onClick: () => navigate(RoutesEnum.Configuration),
     },
     {
       type: "divider",
     },
     {
-      key: "5",
+      key: "4",
       danger: true,
       label: "Sair",
       icon: <LogoutOutlined />,
