@@ -92,7 +92,7 @@ export const InputsContainer = styled.div`
 `;
 
 export const InputContainer = styled.div`
-  width: 48%;
+  width: 100%;
 
   gap: 6px;
   display: flex;

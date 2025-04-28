@@ -101,7 +101,7 @@ const Validitys = () => {
       {contextHolder}
       <ValiditysPage>
         <Modal />
-        <h2>Validades cadastrades</h2>
+        <h2>Validades cadastradas</h2>
         <TableContainer>
           <ButtonAdd icon={<AppstoreAddOutlined />} onClick={() => navigate(RoutesEnum.Validitys_Create)} color="primary" variant="solid">
             Novo

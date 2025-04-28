@@ -8,6 +8,10 @@ export const PainelContainer = styled.div`
 
   display: flex;
   flex-flow: row;
+
+  @media screen and (max-width: 1060px) {
+    padding-left: 0;
+  }
 `;
 
 export const MenuContainer = styled.aside<{ isVisible: boolean }>`
