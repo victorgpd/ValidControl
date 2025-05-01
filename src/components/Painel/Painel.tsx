@@ -20,10 +20,11 @@ import { WhereFilterOp } from "firebase/firestore";
 type MenuItem = Required<MenuProps>["items"][number];
 
 interface PainelProps {
+  title?: string;
   children?: React.ReactNode;
 }
 
-const Painel = ({ children }: PainelProps) => {
+const Painel = ({ children, title }: PainelProps) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
@@ -126,7 +127,7 @@ const Painel = ({ children }: PainelProps) => {
   };
 
   return (
-    <Screen isVisible={isVisible} displayMenu={toggleMenuVisibility}>
+    <Screen painel={true} text={title} isVisible={isVisible} displayMenu={toggleMenuVisibility}>
       <PainelContainer>
         <MenuContainer isVisible={isVisible}>
           <InfoContainer>
@@ -136,7 +137,7 @@ const Painel = ({ children }: PainelProps) => {
             <Info className="welcome">Seja bem-vindo ao seu painel!</Info>
           </InfoContainer>
 
-          <MenuList onClick={handleClickMenu} style={{ width: 256 }} selectedKeys={openCurrent} mode="inline" theme="dark" items={menuItems} />
+          <MenuList onClick={handleClickMenu} selectedKeys={openCurrent} mode="inline" theme="light" items={menuItems} />
         </MenuContainer>
 
         {children}

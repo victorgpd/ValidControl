@@ -9,7 +9,9 @@ const Home = () => {
   return (
     <Screen>
       <Link to={RoutesEnum.Login}>a</Link>
-      <h1>Home</h1>
+      <section id="home">
+        <h1>Home</h1>
+      </section>
     </Screen>
   );
 };

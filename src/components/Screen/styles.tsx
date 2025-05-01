@@ -1,129 +1,87 @@
 import styled from "styled-components";
-import { Anchor, Dropdown, Menu } from "antd";
+import { Anchor, Button, Dropdown, Menu } from "antd";
 
 export const HeaderContainer = styled.header`
   width: 100%;
-  height: 62px;
-  padding: 10px 15px;
-  background-color: #2f2f2f;
-  border-bottom: 1px solid rgba(222, 224, 224, 0.5);
+  height: 64px;
+  padding: 0 20px;
 
-  gap: 15px;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+
   display: flex;
   align-items: center;
   justify-content: space-between;
 
   position: fixed;
-
-  z-index: 999;
+  top: 0;
+  left: 0;
+  z-index: 10;
 `;
 
 export const LogoContainer = styled.div`
-  height: 100%;
-
-  gap: 10px;
   display: flex;
   align-items: center;
 `;
 
-export const LogoImage = styled.img`
-  height: 100%;
-`;
-
-export const ButtonMenu = styled.button`
-  cursor: pointer;
-  color: white;
-  height: 100%;
-  font-size: 20px;
-  display: none;
-
-  @media screen and (max-width: 1060px) {
-    &.menu-painel {
-      display: inline-block;
-    }
-  }
-
-  @media screen and (max-width: 750px) {
-    &.menu-home {
-      display: inline-block;
-    }
-  }
-`;
-
-export const ButtonsContainer = styled.ul`
-  height: 100%;
-
-  gap: 10px;
+export const AnchorContainer = styled.div`
   display: flex;
   align-items: center;
+  gap: 16px;
 
-  position: relative;
-
-  @media screen and (max-width: 750px) {
+  @media (max-width: 750px) {
     display: none;
   }
 `;
 
 export const AnchorMenu = styled(Anchor)`
-  .ant-anchor-ink {
-    background-color: white !important;
-  }
-
-  .ant-anchor-ink-visible {
-    background-color: white !important;
-  }
-
   .ant-anchor-link-title {
-    color: white !important;
+    color: black;
+    font-weight: 500;
   }
 `;
 
-export const UserMenuContainer = styled.ul`
-  gap: 5px;
+export const UserMenuContainer = styled.div`
   display: flex;
-
-  @media screen and (max-width: 750px) {
-    display: none;
-  }
+  align-items: center;
+  gap: 12px;
 `;
 
 export const UserButton = styled.div`
-  width: 42px;
-  height: 42px;
-  padding: 18px;
-  border-radius: 50%;
-  border: 2px solid white;
-
   display: flex;
-  justify-content: center;
   align-items: center;
-
+  gap: 8px;
   cursor: pointer;
 `;
 
-export const MenuUser = styled(Dropdown)``;
-
-export const MainContainer = styled.main`
-  width: 100%;
-
-  flex: 1;
-  padding-top: 62px;
-  background-color: #f0f4f8;
+export const MenuUser = styled(Dropdown)`
+  cursor: pointer;
 `;
 
-export const PainelContainer = styled.div`
-  width: 100%;
-  height: 100%;
+export const MainContainer = styled.main`
+  flex: 1;
+  background: #f0f2f5;
+  padding-top: 64px;
 
-  display: flex;
-  flex-flow: row;
+  z-index: 9;
+`;
+
+export const ButtonMenu = styled(Button)`
+  display: none;
+
+  @media (max-width: 750px) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+  }
 `;
 
 export const MenuContainer = styled.aside<{ isVisible: boolean }>`
   width: 256px;
-  padding: 10px 0;
-  height: calc(100% - 62px);
-  background-color: #2f2f2f;
+  height: calc(100% - 64px);
+  padding: 10px 5px;
+  background-color: white;
 
   gap: 40px;
   display: flex;
@@ -131,76 +89,88 @@ export const MenuContainer = styled.aside<{ isVisible: boolean }>`
   align-items: center;
 
   position: fixed;
-  top: 62px;
+  top: 64px;
   left: ${(props) => (props.isVisible ? "0" : "-256px")};
 
   transition: left 0.3s;
 
-  z-index: 998;
+  z-index: 9;
+
+  @media screen and (min-width: 750px) {
+    left: -256px;
+  }
 `;
 
 export const InfoContainer = styled.div`
-  width: 100%;
-  padding: 10px 0;
-
-  gap: 5px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  padding: 16px;
+  color: white;
 `;
 
-export const Info = styled.span`
-  color: white;
-  text-align: center;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+export const Info = styled.p`
+  margin: 0;
+  font-size: 14px;
 
   &.greeting {
-    font-size: 20px;
-    font-weight: 600;
+    font-weight: bold;
+    font-size: 16px;
   }
 
   &.welcome {
-    font-size: 16px;
-    font-weight: 400;
-    color: #bbbbbb;
+    font-size: 14px;
+    opacity: 0.8;
   }
 `;
 
 export const MenuList = styled(Menu)`
-  background-color: #2f2f2f !important;
+  width: 240px !important;
+  background-color: white !important;
   color: white !important;
 
   .ant-menu-item-selected {
-    background-color: #4b4b4b !important; /* Fundo do item selecionado */
-    color: #80d8ff !important;
+    background-color: #f0fdf4 !important;
+    color: #374151 !important;
+    border-left: 4px solid #10b981;
   }
 
   .ant-menu-item {
-    color: white;
+    color: black;
   }
 
   .ant-menu-item-active {
-    color: #1677ff !important;
+    color: #10b981 !important;
   }
 
   .ant-menu-item:hover {
-    background-color: white !important;
+    background-color: #f5f5f5 !important;
   }
 
   .ant-menu-submenu-active > .ant-menu-submenu-title {
-    background: white !important;
-    color: #1677ff;
+    background: #f5f5f5 !important;
+    color: #10b981 !important;
   }
 
   .ant-menu-submenu-title {
-    color: white;
+    color: black;
   }
 
   .ant-menu-submenu-selected {
-    background-color: #4b4b4b !important;
+    background-color: #f0fdf4 !important;
+    border-left: 4px solid #10b981;
 
     & span {
-      color: #80d8ff !important;
+      color: #374151 !important;
     }
+  }
+`;
+
+export const ButtonRegister = styled(Button)`
+  background-color: #10b981;
+  border: none;
+  color: white;
+  font-weight: 500;
+
+  &:hover {
+    background-color: #059669;
+    color: white;
   }
 `;

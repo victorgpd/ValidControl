@@ -187,7 +187,7 @@ const Configuration = () => {
   };
 
   return (
-    <Painel>
+    <Painel title="Configurações">
       {contextHolder}
       <ConfigurationPage>
         <ConfigurationContainer heightValue="auto">

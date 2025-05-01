@@ -154,7 +154,7 @@ const Dashboard = () => {
   }, [loja]);
 
   return (
-    <Painel>
+    <Painel title="Dashboard">
       <DashboardContainer>
         <ContainerCards>
           {/* Cards de informações */}

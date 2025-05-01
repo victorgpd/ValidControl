@@ -97,7 +97,7 @@ const Validitys = () => {
   }, []);
 
   return (
-    <Painel>
+    <Painel title="Validades">
       {contextHolder}
       <ValiditysPage>
         <Modal />

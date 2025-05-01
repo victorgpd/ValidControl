@@ -45,7 +45,7 @@ export const useFields = (collectionName: string) => {
   );
 
   const updateFieldValue = useCallback(
-    async (docId: string, field: string, newValue: any[], editField: any) => {
+    async (docId: string, field: string, newValue: any[], editField?: any) => {
       let fieldValue;
 
       if (field === "products") {

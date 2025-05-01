@@ -15,10 +15,10 @@ export const PainelContainer = styled.div`
 `;
 
 export const MenuContainer = styled.aside<{ isVisible: boolean }>`
-  width: 240px;
+  width: 250px;
   height: 100%;
-  padding: 10px 0;
-  background-color: #2f2f2f;
+  padding: 10px 5;
+  background-color: white;
 
   gap: 40px;
   display: flex;
@@ -37,7 +37,7 @@ export const MenuContainer = styled.aside<{ isVisible: boolean }>`
     top: 62px;
     left: ${(props) => (props.isVisible ? "0" : "-256px")};
 
-    z-index: 998;
+    z-index: 9;
   }
 `;
 
@@ -69,41 +69,43 @@ export const Info = styled.span`
 `;
 
 export const MenuList = styled(Menu)`
-  width: 100% !important;
-  background-color: #2f2f2f !important;
+  width: 240px !important;
+  background-color: white !important;
   color: white !important;
 
   .ant-menu-item-selected {
-    background-color: #4b4b4b !important; /* Fundo do item selecionado */
-    color: #80d8ff !important;
+    background-color: #f0fdf4 !important;
+    color: #374151 !important;
+    border-left: 4px solid #10b981;
   }
 
   .ant-menu-item {
-    color: white;
+    color: black;
   }
 
   .ant-menu-item-active {
-    color: #1677ff !important;
+    color: #10b981 !important;
   }
 
   .ant-menu-item:hover {
-    background-color: white !important;
+    background-color: #f5f5f5 !important;
   }
 
   .ant-menu-submenu-active > .ant-menu-submenu-title {
-    background: white !important;
-    color: #1677ff;
+    background: #f5f5f5 !important;
+    color: #10b981 !important;
   }
 
   .ant-menu-submenu-title {
-    color: white;
+    color: black;
   }
 
   .ant-menu-submenu-selected {
-    background-color: #4b4b4b !important;
+    background-color: #f0fdf4 !important;
+    border-left: 4px solid #10b981;
 
     & span {
-      color: #80d8ff !important;
+      color: #374151 !important;
     }
   }
 `;

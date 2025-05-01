@@ -135,7 +135,7 @@ const ValidityManager = () => {
   };
 
   return (
-    <Painel>
+    <Painel title={edit ? "Editar Validade" : "Cadastrar Validade"}>
       <Modal />
       <Container>
         <FormAntd

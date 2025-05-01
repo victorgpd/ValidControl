@@ -83,9 +83,9 @@ const Products = () => {
   }, []);
 
   return (
-    <Painel>
-      {contextHolder}
+    <Painel title="Produtos">
       <ProductsPage>
+        {contextHolder}
         <Modal />
         <h2>Produtos cadastrados</h2>
         <TableContainer>

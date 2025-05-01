@@ -12,7 +12,7 @@ export const RegisterPage = styled.div`
 
 export const RegisterContainer = styled.div`
   width: 100%;
-  max-width: 820px;
+  max-width: 900px;
   height: 100%;
   max-height: 344px;
 
@@ -40,7 +40,7 @@ export const RegisterContainer = styled.div`
 
 export const ImageContainer = styled.div`
   width: 100%;
-  max-width: 445px;
+  max-width: 500px;
   height: 100%;
 `;
 
@@ -51,7 +51,7 @@ export const Image = styled.img`
 
 export const RegisterContent = styled.div`
   width: 100%;
-  max-width: 380px;
+  max-width: 400px;
   height: 100%;
   padding: 10px 20px;
   background-color: #fff;

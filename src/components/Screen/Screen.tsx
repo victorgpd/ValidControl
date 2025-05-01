@@ -1,10 +1,10 @@
-import Logo from "../../images/logo.png";
-
 import { Button, MenuProps } from "antd";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   BarChartOutlined,
+  CheckCircleOutlined,
   CloseOutlined,
+  DownOutlined,
   HomeOutlined,
   LoginOutlined,
   LogoutOutlined,
@@ -19,8 +19,7 @@ import {
 import {
   HeaderContainer,
   LogoContainer,
-  LogoImage,
-  ButtonsContainer,
+  AnchorContainer,
   AnchorMenu,
   UserMenuContainer,
   UserButton,
@@ -31,16 +30,19 @@ import {
   InfoContainer,
   Info,
   MenuList,
+  ButtonRegister,
 } from "./styles";
 import { useNotification } from "../../hooks/useNotification";
 import { useAppSelector } from "../../hooks/store";
 import useAuthentication from "../../hooks/useAuthentication";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { RoutesEnum } from "../../enums/routes";
 
 interface ScreenProps {
   displayMenu?: () => void;
   isVisible?: boolean;
+  painel?: boolean;
+  text?: string;
   children?: React.ReactNode;
 }
 
@@ -69,7 +71,7 @@ const itemsAnchor = [
   },
 ];
 
-const Screen = ({ displayMenu, isVisible, children }: ScreenProps) => {
+const Screen = ({ displayMenu, painel, text, isVisible, children }: ScreenProps) => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -81,110 +83,114 @@ const Screen = ({ displayMenu, isVisible, children }: ScreenProps) => {
   const [openCurrent, setOpenCurrent] = useState<string[]>(["home"]);
   const [menuHomeIsVisible, setMenuHomeIsVisible] = useState<boolean>(false);
 
-  const itemsUser: MenuProps["items"] = [
-    {
-      key: "1",
-      label: `Olá, ${user?.name}`,
-    },
-    {
-      type: "divider",
-    },
-    {
-      key: "2",
-      label: "Painel",
-      icon: <PieChartOutlined />,
-      onClick: () => navigate(RoutesEnum.Dashboard),
-    },
-    {
-      key: "3",
-      label: "Configurações",
-      icon: <SettingOutlined />,
-      onClick: () => navigate(RoutesEnum.Configuration),
-    },
-    {
-      type: "divider",
-    },
-    {
-      key: "4",
-      danger: true,
-      label: "Sair",
-      icon: <LogoutOutlined />,
-      onClick: handleLogout,
-    },
-  ];
+  const itemsUser = useMemo<MenuProps["items"]>(() => {
+    return [
+      {
+        key: "1",
+        label: `Olá, ${user?.name}`,
+      },
+      {
+        type: "divider",
+      },
+      {
+        key: "2",
+        label: "Painel",
+        icon: <PieChartOutlined />,
+        onClick: () => navigate(RoutesEnum.Dashboard),
+      },
+      {
+        key: "3",
+        label: "Configurações",
+        icon: <SettingOutlined />,
+        onClick: () => navigate(RoutesEnum.Configuration),
+      },
+      {
+        type: "divider",
+      },
+      {
+        key: "4",
+        danger: true,
+        label: "Sair",
+        icon: <LogoutOutlined />,
+        onClick: handleLogout,
+      },
+    ];
+  }, [user]);
 
-  const dynamicItems: MenuItem[] = [
-    {
-      key: "home",
-      icon: <HomeOutlined />,
-      label: "Home",
-      onClick: () => navigate(RoutesEnum.Home),
-    },
-    {
-      key: "overview",
-      icon: <BarChartOutlined />,
-      label: "Visão geral",
-      onClick: () => navigate("/#overview"),
-    },
-    {
-      key: "vantages",
-      icon: <StarOutlined />,
-      label: "Vantagens",
-      onClick: () => navigate("/#vantages"),
-    },
-    {
-      key: "use",
-      icon: <PlayCircleOutlined />,
-      label: "Como usar",
-      onClick: () => navigate("/#use"),
-    },
-    {
-      type: "divider",
-      style: { color: "white", backgroundColor: "white" },
-    },
-    ...(user?.name
-      ? [
-          {
-            key: "painel",
-            icon: <PieChartOutlined />,
-            label: "Painel",
-            onClick: () => navigate(RoutesEnum.Dashboard),
-          },
-          {
-            key: "profile",
-            icon: <UserOutlined />,
-            label: "Perfil",
-            onClick: () => navigate("/painel/dashboard"),
-          },
-          {
-            key: "configuration",
-            icon: <SettingOutlined />,
-            label: "Configurações",
-            onClick: () => navigate("/painel/dashboard"),
-          },
-          {
-            key: "logout",
-            icon: <LogoutOutlined />,
-            label: "Sair",
-            style: { color: "red" },
-            onClick: handleLogout,
-          },
-        ]
-      : [
-          {
-            key: "login",
-            icon: <LoginOutlined />,
-            label: "Login",
-            onClick: () => navigate(RoutesEnum.Login),
-          },
-          {
-            key: "register",
-            icon: <UserAddOutlined />,
-            label: "Cadastro",
-            onClick: () => navigate(RoutesEnum.Register),
-          },
-        ]),
-  ];
+  const dynamicItems = useMemo<MenuItem[]>(() => {
+    return [
+      {
+        key: "home",
+        icon: <HomeOutlined />,
+        label: "Home",
+        onClick: () => navigate(RoutesEnum.Home),
+      },
+      {
+        key: "overview",
+        icon: <BarChartOutlined />,
+        label: "Visão geral",
+        onClick: () => navigate("/#overview"),
+      },
+      {
+        key: "vantages",
+        icon: <StarOutlined />,
+        label: "Vantagens",
+        onClick: () => navigate("/#vantages"),
+      },
+      {
+        key: "use",
+        icon: <PlayCircleOutlined />,
+        label: "Como usar",
+        onClick: () => navigate("/#use"),
+      },
+      {
+        type: "divider",
+        style: { color: "black", backgroundColor: "black" },
+      },
+      ...(user?.name
+        ? [
+            {
+              key: "painel",
+              icon: <PieChartOutlined />,
+              label: "Painel",
+              onClick: () => navigate(RoutesEnum.Dashboard),
+            },
+            {
+              key: "profile",
+              icon: <UserOutlined />,
+              label: "Perfil",
+              onClick: () => navigate("/painel/dashboard"),
+            },
+            {
+              key: "configuration",
+              icon: <SettingOutlined />,
+              label: "Configurações",
+              onClick: () => navigate("/painel/dashboard"),
+            },
+            {
+              key: "logout",
+              icon: <LogoutOutlined />,
+              label: "Sair",
+              style: { color: "red" },
+              onClick: handleLogout,
+            },
+          ]
+        : [
+            {
+              key: "login",
+              icon: <LoginOutlined />,
+              label: "Login",
+              onClick: () => navigate(RoutesEnum.Login),
+            },
+            {
+              key: "register",
+              icon: <UserAddOutlined />,
+              label: "Cadastro",
+              onClick: () => navigate(RoutesEnum.Register),
+            },
+          ]),
+    ];
+  }, [user]);
 
   useEffect(() => {
     verifyLogged();
@@ -228,47 +234,54 @@ const Screen = ({ displayMenu, isVisible, children }: ScreenProps) => {
     <>
       <HeaderContainer>
         <LogoContainer>
-          {location.pathname.includes("/painel") && (
+          {painel && (
             <ButtonMenu className="menu-painel" onClick={displayMenu}>
               {isVisible ? <CloseOutlined /> : <MenuOutlined />}
             </ButtonMenu>
           )}
-          {!location.pathname.includes("/painel") && (
+          {!painel && (
             <ButtonMenu className="menu-home" onClick={handleDisplayMenuHome}>
               {menuHomeIsVisible ? <CloseOutlined /> : <MenuOutlined />}
             </ButtonMenu>
           )}
-          <Link to={"/"} style={{ height: "100%" }}>
-            <LogoImage src={Logo} alt="Logo" />
+          <Link to={"/"} style={{ height: "100%", gap: "10px", marginRight: "65px", display: "flex", alignItems: "center" }}>
+            <CheckCircleOutlined style={{ height: "100%", fontSize: "34px", color: "rgba(16, 185, 129, 1)" }} />
+            <span style={{ fontWeight: "500", fontSize: "20px", color: "black" }}>ValidControl</span>
           </Link>
-        </LogoContainer>
 
-        {!location.pathname.includes("/painel") && (
-          <ButtonsContainer>
-            <AnchorMenu direction="horizontal" items={itemsAnchor} style={{ color: "white" }} />
-          </ButtonsContainer>
-        )}
+          {!painel && (
+            <AnchorContainer>
+              <AnchorMenu direction="horizontal" items={itemsAnchor} style={{ color: "black" }} />
+            </AnchorContainer>
+          )}
+
+          {painel && <span style={{ fontSize: "20px" }}> | {text}</span>}
+        </LogoContainer>
 
         <UserMenuContainer>
           {isCheckingAuth ? null : user?.uid ? (
             <MenuUser menu={{ items: itemsUser }} placement="bottomRight" arrow>
               <UserButton>
-                {user.image ? <img src={user.image} style={{ width: "42px", height: "42px", borderRadius: "50%" }} /> : <UserOutlined style={{ fontSize: "24px", color: "white" }} />}
+                {user.image ? <img src={user.image} style={{ width: "32px", height: "32px", borderRadius: "50%" }} /> : <UserOutlined style={{ fontSize: "24px", color: "black" }} />}
+                <span style={{ fontSize: "14px", fontWeight: "500", color: "black" }}>{user.name}</span>
+                <DownOutlined style={{ fontSize: "12px", color: "black" }} />
               </UserButton>
             </MenuUser>
           ) : (
             <>
-              <Button color="cyan" onClick={() => navigate(RoutesEnum.Login)} variant="text">
+              <Button style={{ color: "black", border: "none", backgroundColor: "transparent" }} onClick={() => navigate(RoutesEnum.Login)} variant="text">
                 Acessar
               </Button>
 
-              <Button color="cyan" onClick={() => navigate(RoutesEnum.Register)} variant="text">
+              <ButtonRegister onClick={() => navigate(RoutesEnum.Register)} variant="text">
                 Começar agora
-              </Button>
+              </ButtonRegister>
             </>
           )}
         </UserMenuContainer>
+      </HeaderContainer>
 
+      <MainContainer>
         <MenuContainer isVisible={menuHomeIsVisible}>
           <InfoContainer>
             <Info className="greeting">{message}</Info>
@@ -276,9 +289,7 @@ const Screen = ({ displayMenu, isVisible, children }: ScreenProps) => {
           </InfoContainer>
           <MenuList onClick={handleClickMenu} style={{ width: 256 }} selectedKeys={openCurrent} mode="vertical" theme="dark" items={dynamicItems} />
         </MenuContainer>
-      </HeaderContainer>
 
-      <MainContainer>
         {contextHolder}
         {children}
       </MainContainer>

@@ -81,7 +81,7 @@ const ProductManager = () => {
   };
 
   return (
-    <Painel>
+    <Painel title={edit ? "Editar Produto" : "Cadastrar Produto"}>
       <Container>
         <FormAntd
           style={{

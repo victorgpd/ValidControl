@@ -127,7 +127,7 @@ const ImportProduct = () => {
   };
 
   return (
-    <Painel>
+    <Painel title="Importar produtos">
       <ImportProductPage>
         <Container direction="column">
           <h2>Nome dos campos na tabela</h2>
