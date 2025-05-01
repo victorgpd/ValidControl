@@ -122,9 +122,10 @@ export const Info = styled.p`
 `;
 
 export const MenuList = styled(Menu)`
+  border: none !important;
   width: 240px !important;
-  background-color: white !important;
   color: white !important;
+  background-color: white !important;
 
   .ant-menu-item-selected {
     background-color: #f0fdf4 !important;
