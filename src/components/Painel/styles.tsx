@@ -1,23 +1,25 @@
 import { Menu } from "antd";
 import styled from "styled-components";
 
-export const PainelContainer = styled.div`
+export const PainelContainer = styled.div<{ isVisible: boolean }>`
   width: 100%;
   height: 100%;
-  padding-left: 240px;
+  padding-left: ${(props) => (props.isVisible ? "250px" : "0")};
 
   display: flex;
   flex-flow: row;
+  z-index: 7;
+  transition: padding-left 0.3s;
 
-  @media screen and (max-width: 1060px) {
+  @media screen and (max-width: 768px) {
     padding-left: 0;
   }
 `;
 
 export const MenuContainer = styled.aside<{ isVisible: boolean }>`
   width: 250px;
-  height: 100%;
-  padding: 10px 5;
+  height: calc(100% - 64px);
+  padding: 10px 10px;
   background-color: white;
 
   gap: 40px;
@@ -26,45 +28,61 @@ export const MenuContainer = styled.aside<{ isVisible: boolean }>`
   align-items: center;
 
   position: fixed;
-  top: 62px;
-  left: 0;
+  top: 64px;
+  left: ${(props) => (props.isVisible ? "0" : "-256px")};
+  z-index: 9;
 
   transition: left 0.3s;
 
-  @media screen and (max-width: 1060px) {
-    height: calc(100% - 62px);
+  @media screen and (max-width: 768px) {
     position: fixed;
-    top: 62px;
+    top: 64px;
     left: ${(props) => (props.isVisible ? "0" : "-256px")};
+  }
+`;
 
-    z-index: 9;
+export const Container = styled.div<{ isVisible: boolean }>`
+  width: 100%;
+  height: calc(100% - 64px);
+  background-color: rgba(0, 0, 0, 0.45);
+
+  position: fixed;
+  top: 64px;
+  left: 0;
+
+  display: ${(props) => (props.isVisible ? "block" : "none")};
+
+  z-index: 8;
+
+  transition: all 0.3s ease-in-out;
+
+  @media screen and (min-width: 750px) {
+    display: none;
   }
 `;
 
 export const InfoContainer = styled.div`
-  width: 100%;
-  padding: 10px 0;
+  padding: 16px;
 
-  gap: 5px;
+  gap: 4px;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
 `;
 
 export const Info = styled.span`
-  color: white;
-  text-align: center;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+  color: black;
+  margin: 0;
+  font-size: 14px;
 
   &.greeting {
-    font-size: 20px;
     font-weight: 600;
+    font-size: 16px;
   }
 
   &.welcome {
-    font-size: 16px;
-    font-weight: 400;
-    color: #bbbbbb;
+    font-size: 14px;
+    opacity: 0.8;
   }
 `;
 
@@ -73,6 +91,10 @@ export const MenuList = styled(Menu)`
   width: 240px !important;
   color: white !important;
   background-color: white !important;
+
+  .ant-menu-item-group-title {
+    color: rgba(0, 0, 0, 0.65);
+  }
 
   .ant-menu-item-selected {
     background-color: #f0fdf4 !important;

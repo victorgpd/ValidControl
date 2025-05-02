@@ -87,8 +87,8 @@ const Products = () => {
       <ProductsPage>
         {contextHolder}
         <Modal />
-        <h2>Produtos cadastrados</h2>
         <TableContainer>
+          <h2>Produtos cadastrados</h2>
           <ButtonAdd icon={<AppstoreAddOutlined />} onClick={() => navigate(RoutesEnum.Product_Create)} color="primary" variant="solid">
             Novo
           </ButtonAdd>

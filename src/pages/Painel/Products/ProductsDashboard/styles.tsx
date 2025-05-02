@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 export const ProductsPage = styled.div`
   width: 100%;
-  height: 100%;
+  min-height: 100%;
   padding: 15px;
 
   h2 {
@@ -16,6 +16,7 @@ export const ProductsPage = styled.div`
 
 export const TableContainer = styled.div`
   width: 100%;
+  height: 100%;
   padding: 16px;
   border-radius: 12px;
 
@@ -25,7 +26,6 @@ export const TableContainer = styled.div`
   gap: 15px;
   display: flex;
   flex-flow: column;
-  align-items: flex-end;
 `;
 
 export const ContainerButtonsTable = styled.div`

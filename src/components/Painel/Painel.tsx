@@ -13,7 +13,7 @@ import useAuthentication from "../../hooks/useAuthentication";
 import { setLoja, setOpenCurrentMenu } from "../../redux/globalReducer/slice";
 import { RoutesEnum } from "../../enums/routes";
 
-import { Info, InfoContainer, MenuContainer, MenuList, PainelContainer } from "./styles";
+import { Container, Info, InfoContainer, MenuContainer, MenuList, PainelContainer } from "./styles";
 
 import { WhereFilterOp } from "firebase/firestore";
 
@@ -47,46 +47,68 @@ const Painel = ({ children, title }: PainelProps) => {
   }, [user?.name]);
 
   const menuItems: MenuItem[] = [
-    { key: "dashboard", icon: <PieChartOutlined />, label: "Dashboard", onClick: () => navigate(RoutesEnum.Dashboard) },
     {
-      key: "products",
-      label: "Produtos",
-      icon: <ShoppingCartOutlined />,
+      key: "painel",
+      label: "Painel",
+      type: "group",
       children: [
-        { key: "product1", label: "Produtos cadastrados", onClick: () => navigate(RoutesEnum.Products) },
-        { key: "product2", label: "Cadastrar novo produto", onClick: () => (window.location.href = RoutesEnum.Product_Create) },
-      ],
-    },
-    {
-      key: "validitys",
-      label: "Validades",
-      icon: <CalendarOutlined />,
-      children: [
-        { key: "validity1", label: "Validades cadastradas", onClick: () => navigate(RoutesEnum.Validitys) },
-        { key: "validity2", label: "Cadastrar nova validade", onClick: () => (window.location.href = RoutesEnum.Validitys_Create) },
+        { key: "dashboard", icon: <PieChartOutlined />, label: "Dashboard", onClick: () => navigate(RoutesEnum.Dashboard) },
+        {
+          key: "products",
+          label: "Produtos",
+          icon: <ShoppingCartOutlined />,
+          children: [
+            { key: "product1", label: "Produtos cadastrados", onClick: () => navigate(RoutesEnum.Products) },
+            { key: "product2", label: "Cadastrar novo produto", onClick: () => (window.location.href = RoutesEnum.Product_Create) },
+          ],
+        },
+        {
+          key: "validitys",
+          label: "Validades",
+          icon: <CalendarOutlined />,
+          children: [
+            { key: "validity1", label: "Validades cadastradas", onClick: () => navigate(RoutesEnum.Validitys) },
+            { key: "validity2", label: "Cadastrar nova validade", onClick: () => (window.location.href = RoutesEnum.Validitys_Create) },
+          ],
+        },
       ],
     },
     {
       key: "data",
-      label: "Gerenciar Dados",
-      icon: <DatabaseOutlined />,
+      label: "Dados",
+      type: "group",
       children: [
-        { key: "data1", label: "Importar produtos", onClick: () => navigate(RoutesEnum.Data_Import) },
-        { key: "data2", label: "Exportar produtos" },
-        { key: "data3", label: "Exportar validades" },
+        {
+          key: "data",
+          label: "Gerenciar Dados",
+          icon: <DatabaseOutlined />,
+          children: [
+            { key: "data1", label: "Importar produtos", onClick: () => navigate(RoutesEnum.Data_Import) },
+            { key: "data2", label: "Exportar produtos" },
+            { key: "data3", label: "Exportar validades" },
+          ],
+        },
       ],
     },
     {
-      key: "configuration",
-      label: "Configurações",
-      icon: <SettingOutlined />,
-      onClick: () => navigate(RoutesEnum.Configuration),
-    },
-    {
-      key: "logout",
-      label: "Sair",
-      icon: <LogoutOutlined />,
-      onClick: handleLogout,
+      key: "user",
+      label: "Usuário",
+      type: "group",
+      children: [
+        {
+          key: "configuration",
+          label: "Configurações",
+          icon: <SettingOutlined />,
+          onClick: () => navigate(RoutesEnum.Configuration),
+        },
+        {
+          key: "logout",
+          label: "Sair",
+          icon: <LogoutOutlined />,
+          style: { color: "red" },
+          onClick: handleLogout,
+        },
+      ],
     },
   ];
 
@@ -128,20 +150,20 @@ const Painel = ({ children, title }: PainelProps) => {
 
   return (
     <Screen painel={true} text={title} isVisible={isVisible} displayMenu={toggleMenuVisibility}>
-      <PainelContainer>
-        <MenuContainer isVisible={isVisible}>
-          <InfoContainer>
-            <Info className="greeting">
-              {message}, {name} 👋!
-            </Info>
-            <Info className="welcome">Seja bem-vindo ao seu painel!</Info>
-          </InfoContainer>
+      <MenuContainer isVisible={isVisible}>
+        <InfoContainer>
+          <Info className="greeting">
+            {message}, {name} 👋!
+          </Info>
+          <Info className="welcome">Seja bem-vindo ao seu painel!</Info>
+        </InfoContainer>
 
-          <MenuList onClick={handleClickMenu} selectedKeys={openCurrent} mode="inline" theme="light" items={menuItems} />
-        </MenuContainer>
+        <MenuList onClick={handleClickMenu} selectedKeys={openCurrent} mode="inline" theme="light" items={menuItems} />
+      </MenuContainer>
 
-        {children}
-      </PainelContainer>
+      <Container isVisible={isVisible} onClick={toggleMenuVisibility} />
+
+      <PainelContainer isVisible={isVisible}>{children}</PainelContainer>
     </Screen>
   );
 };

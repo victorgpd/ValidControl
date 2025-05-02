@@ -11,10 +11,14 @@ import { Image, ImageContainer, RegisterContainer, RegisterContent, RegisterForm
 import useTitle from "../../hooks/useTitle";
 import { RoutesEnum } from "../../enums/routes";
 import { useNotification } from "../../hooks/useNotification";
+import { useAppDispatch } from "../../hooks/store";
+import { setOpenCurrentMenu } from "../../redux/globalReducer/slice";
 
 const Register = () => {
   useTitle("Cadastrar-se");
+
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const [register, setRegister] = useState({
     nameStore: "",
@@ -29,6 +33,10 @@ const Register = () => {
   useEffect(() => {
     const unsubscribe = watchAuthState(navigate);
     return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    dispatch(setOpenCurrentMenu(["register"]));
   }, []);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {

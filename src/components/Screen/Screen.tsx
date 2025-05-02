@@ -1,8 +1,8 @@
 import { Button, MenuProps } from "antd";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
+  AppstoreFilled,
   BarChartOutlined,
-  CheckCircleOutlined,
   CloseOutlined,
   DownOutlined,
   HomeOutlined,
@@ -31,12 +31,16 @@ import {
   Info,
   MenuList,
   ButtonRegister,
+  LogoLink,
+  TitleSpan,
+  Container,
 } from "./styles";
 import { useNotification } from "../../hooks/useNotification";
-import { useAppSelector } from "../../hooks/store";
+import { useAppDispatch, useAppSelector } from "../../hooks/store";
 import useAuthentication from "../../hooks/useAuthentication";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { RoutesEnum } from "../../enums/routes";
+import { setOpenCurrentMenu } from "../../redux/globalReducer/slice";
 
 interface ScreenProps {
   displayMenu?: () => void;
@@ -72,125 +76,126 @@ const itemsAnchor = [
 ];
 
 const Screen = ({ displayMenu, painel, text, isVisible, children }: ScreenProps) => {
-  const navigate = useNavigate();
   const location = useLocation();
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const { contextHolder } = useNotification();
-  const { user } = useAppSelector((state) => state.globalReducer);
   const { logout, verifyLogged, isCheckingAuth } = useAuthentication();
+  const { user, openCurrentMenu } = useAppSelector((state) => state.globalReducer);
 
   const [message, setMessage] = useState<string>("");
-  const [openCurrent, setOpenCurrent] = useState<string[]>(["home"]);
+  const [openCurrent, setOpenCurrent] = useState<string[]>(openCurrentMenu);
   const [menuHomeIsVisible, setMenuHomeIsVisible] = useState<boolean>(false);
 
-  const itemsUser = useMemo<MenuProps["items"]>(() => {
-    return [
-      {
-        key: "1",
-        label: `Olá, ${user?.name}`,
-      },
-      {
-        type: "divider",
-      },
-      {
-        key: "2",
-        label: "Painel",
-        icon: <PieChartOutlined />,
-        onClick: () => navigate(RoutesEnum.Dashboard),
-      },
-      {
-        key: "3",
-        label: "Configurações",
-        icon: <SettingOutlined />,
-        onClick: () => navigate(RoutesEnum.Configuration),
-      },
-      {
-        type: "divider",
-      },
-      {
-        key: "4",
-        danger: true,
-        label: "Sair",
-        icon: <LogoutOutlined />,
-        onClick: handleLogout,
-      },
-    ];
-  }, [user]);
+  const itemsUser: MenuProps["items"] = [
+    {
+      key: "1",
+      label: `Olá, ${user?.name}`,
+    },
+    {
+      type: "divider",
+    },
+    {
+      key: "2",
+      label: "Painel",
+      icon: <PieChartOutlined />,
+      onClick: () => navigate(RoutesEnum.Dashboard),
+    },
+    {
+      key: "3",
+      label: "Configurações",
+      icon: <SettingOutlined />,
+      onClick: () => navigate(RoutesEnum.Configuration),
+    },
+    {
+      type: "divider",
+    },
+    {
+      key: "4",
+      danger: true,
+      label: "Sair",
+      icon: <LogoutOutlined />,
+      onClick: handleLogout,
+    },
+  ];
 
-  const dynamicItems = useMemo<MenuItem[]>(() => {
-    return [
-      {
-        key: "home",
-        icon: <HomeOutlined />,
-        label: "Home",
-        onClick: () => navigate(RoutesEnum.Home),
-      },
-      {
-        key: "overview",
-        icon: <BarChartOutlined />,
-        label: "Visão geral",
-        onClick: () => navigate("/#overview"),
-      },
-      {
-        key: "vantages",
-        icon: <StarOutlined />,
-        label: "Vantagens",
-        onClick: () => navigate("/#vantages"),
-      },
-      {
-        key: "use",
-        icon: <PlayCircleOutlined />,
-        label: "Como usar",
-        onClick: () => navigate("/#use"),
-      },
-      {
-        type: "divider",
-        style: { color: "black", backgroundColor: "black" },
-      },
-      ...(user?.name
-        ? [
-            {
-              key: "painel",
-              icon: <PieChartOutlined />,
-              label: "Painel",
-              onClick: () => navigate(RoutesEnum.Dashboard),
-            },
-            {
-              key: "profile",
-              icon: <UserOutlined />,
-              label: "Perfil",
-              onClick: () => navigate("/painel/dashboard"),
-            },
-            {
-              key: "configuration",
-              icon: <SettingOutlined />,
-              label: "Configurações",
-              onClick: () => navigate("/painel/dashboard"),
-            },
-            {
-              key: "logout",
-              icon: <LogoutOutlined />,
-              label: "Sair",
-              style: { color: "red" },
-              onClick: handleLogout,
-            },
-          ]
-        : [
-            {
-              key: "login",
-              icon: <LoginOutlined />,
-              label: "Login",
-              onClick: () => navigate(RoutesEnum.Login),
-            },
-            {
-              key: "register",
-              icon: <UserAddOutlined />,
-              label: "Cadastro",
-              onClick: () => navigate(RoutesEnum.Register),
-            },
-          ]),
-    ];
-  }, [user]);
+  const dynamicItems: MenuItem[] = [
+    {
+      key: "1",
+      label: "Página Inicial",
+      type: "group",
+      children: [
+        {
+          key: "home",
+          icon: <HomeOutlined />,
+          label: "Home",
+          onClick: () => navigate(RoutesEnum.Home),
+        },
+        {
+          key: "overview",
+          icon: <BarChartOutlined />,
+          label: "Visão geral",
+          onClick: () => navigate("/#overview"),
+        },
+        {
+          key: "vantages",
+          icon: <StarOutlined />,
+          label: "Vantagens",
+          onClick: () => navigate("/#vantages"),
+        },
+        {
+          key: "use",
+          icon: <PlayCircleOutlined />,
+          label: "Como usar",
+          onClick: () => navigate("/#use"),
+        },
+      ],
+    },
+    {
+      key: "2",
+      label: "Usuário",
+      type: "group",
+      children: [
+        ...(user?.name
+          ? [
+              {
+                key: "painel",
+                icon: <PieChartOutlined />,
+                label: "Painel",
+                onClick: () => navigate(RoutesEnum.Dashboard),
+              },
+              {
+                key: "configuration",
+                icon: <SettingOutlined />,
+                label: "Configurações",
+                onClick: () => navigate(RoutesEnum.Configuration),
+              },
+              {
+                key: "logout",
+                icon: <LogoutOutlined />,
+                label: "Sair",
+                style: { color: "red" },
+                onClick: handleLogout,
+              },
+            ]
+          : [
+              {
+                key: "login",
+                icon: <LoginOutlined />,
+                label: "Login",
+                onClick: () => navigate(RoutesEnum.Login),
+              },
+              {
+                key: "register",
+                icon: <UserAddOutlined />,
+                label: "Cadastro",
+                onClick: () => navigate(RoutesEnum.Register),
+              },
+            ]),
+      ],
+    },
+  ];
 
   useEffect(() => {
     verifyLogged();
@@ -210,6 +215,10 @@ const Screen = ({ displayMenu, painel, text, isVisible, children }: ScreenProps)
   }, []);
 
   useEffect(() => {
+    setOpenCurrent(openCurrentMenu);
+  }, [openCurrentMenu]);
+
+  useEffect(() => {
     const width = window.innerWidth;
 
     if (width < 750) {
@@ -224,6 +233,7 @@ const Screen = ({ displayMenu, painel, text, isVisible, children }: ScreenProps)
 
   const handleClickMenu = (e: { keyPath: string[] }) => {
     setOpenCurrent(e.keyPath);
+    dispatch(setOpenCurrentMenu(e.keyPath));
   };
 
   const handleDisplayMenuHome = () => {
@@ -244,10 +254,10 @@ const Screen = ({ displayMenu, painel, text, isVisible, children }: ScreenProps)
               {menuHomeIsVisible ? <CloseOutlined /> : <MenuOutlined />}
             </ButtonMenu>
           )}
-          <Link to={"/"} style={{ height: "100%", gap: "10px", marginRight: "65px", display: "flex", alignItems: "center" }}>
-            <CheckCircleOutlined style={{ height: "100%", fontSize: "34px", color: "rgba(16, 185, 129, 1)" }} />
+          <LogoLink to={"/"}>
+            <AppstoreFilled style={{ height: "100%", fontSize: "34px", color: "rgba(16, 185, 129, 1)" }} />
             <span style={{ fontWeight: "500", fontSize: "20px", color: "black" }}>ValidControl</span>
-          </Link>
+          </LogoLink>
 
           {!painel && (
             <AnchorContainer>
@@ -255,7 +265,7 @@ const Screen = ({ displayMenu, painel, text, isVisible, children }: ScreenProps)
             </AnchorContainer>
           )}
 
-          {painel && <span style={{ fontSize: "20px" }}> | {text}</span>}
+          {painel && <TitleSpan> | {text}</TitleSpan>}
         </LogoContainer>
 
         <UserMenuContainer>
@@ -287,8 +297,10 @@ const Screen = ({ displayMenu, painel, text, isVisible, children }: ScreenProps)
             <Info className="greeting">{message}</Info>
             <Info className="welcome">Seja bem-vindo ao ValidControl!</Info>
           </InfoContainer>
-          <MenuList onClick={handleClickMenu} style={{ width: 256 }} selectedKeys={openCurrent} mode="vertical" theme="dark" items={dynamicItems} />
+          <MenuList onClick={handleClickMenu} style={{ width: 256 }} selectedKeys={openCurrent} mode="vertical" theme="light" items={dynamicItems} />
         </MenuContainer>
+
+        <Container isVisible={menuHomeIsVisible} onClick={handleDisplayMenuHome} />
 
         {contextHolder}
         {children}

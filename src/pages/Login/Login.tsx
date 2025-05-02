@@ -12,11 +12,14 @@ import { Image, ImageContainer, LoginContainer, LoginContent, LoginForm, LoginPa
 import useTitle from "../../hooks/useTitle";
 import { RoutesEnum } from "../../enums/routes";
 import { useNotification } from "../../hooks/useNotification";
+import { useAppDispatch } from "../../hooks/store";
+import { setOpenCurrentMenu } from "../../redux/globalReducer/slice";
 
 const Login = () => {
   useTitle("Login");
 
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const [login, setLogin] = useState<UserType>({
     email: "",
@@ -29,6 +32,10 @@ const Login = () => {
   useEffect(() => {
     const unsubscribe = watchAuthState(navigate);
     return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    dispatch(setOpenCurrentMenu(["login"]));
   }, []);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
