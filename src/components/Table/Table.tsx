@@ -7,7 +7,7 @@ interface TableProps {
 }
 
 const Table = ({ dataSource, columns, rowKey }: TableProps) => {
-  return <TableGeneral dataSource={dataSource} columns={columns} rowKey={rowKey} />;
+  return <TableGeneral dataSource={dataSource} columns={columns} rowKey={rowKey} pagination={{ pageSize: 8 }} />;
 };
 
 export default Table;

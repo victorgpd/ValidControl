@@ -42,7 +42,7 @@ const Products = () => {
       key: "barcode",
     },
     {
-      title: "",
+      title: "Ações",
       key: "action",
       render: (_: any, record: ProductType) => (
         <ContainerButtonsTable>

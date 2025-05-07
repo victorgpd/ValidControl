@@ -1,9 +1,8 @@
-import { Button, MenuProps } from "antd";
+import { Button, MenuProps, Select } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   AppstoreFilled,
   BarChartOutlined,
-  CloseOutlined,
   DownOutlined,
   HomeOutlined,
   LoginOutlined,
@@ -40,7 +39,7 @@ import { useAppDispatch, useAppSelector } from "../../hooks/store";
 import useAuthentication from "../../hooks/useAuthentication";
 import { useEffect, useState } from "react";
 import { RoutesEnum } from "../../enums/routes";
-import { setOpenCurrentMenu } from "../../redux/globalReducer/slice";
+import { setOpenCurrentMenu, setSelectedLojaId } from "../../redux/globalReducer/slice";
 
 interface ScreenProps {
   displayMenu?: () => void;
@@ -48,6 +47,8 @@ interface ScreenProps {
   painel?: boolean;
   text?: string;
   children?: React.ReactNode;
+  selectedLojaId?: string | null;
+  setSelectedLojaId?: (id: string) => void;
 }
 
 type MenuItem = Required<MenuProps>["items"][number];
@@ -75,14 +76,14 @@ const itemsAnchor = [
   },
 ];
 
-const Screen = ({ displayMenu, painel, text, isVisible, children }: ScreenProps) => {
+const Screen = ({ displayMenu, painel, text, children }: ScreenProps) => {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const { contextHolder } = useNotification();
   const { logout, verifyLogged, isCheckingAuth } = useAuthentication();
-  const { user, openCurrentMenu } = useAppSelector((state) => state.globalReducer);
+  const { user, openCurrentMenu, lojas, selectedLojaId } = useAppSelector((state) => state.globalReducer);
 
   const [message, setMessage] = useState<string>("");
   const [openCurrent, setOpenCurrent] = useState<string[]>(openCurrentMenu);
@@ -231,6 +232,10 @@ const Screen = ({ displayMenu, painel, text, isVisible, children }: ScreenProps)
     navigate(RoutesEnum.Login);
   }
 
+  const handleChangeLoja = (value: string) => {
+    dispatch(setSelectedLojaId(value));
+  };
+
   const handleClickMenu = (e: { keyPath: string[] }) => {
     setOpenCurrent(e.keyPath);
     dispatch(setOpenCurrentMenu(e.keyPath));
@@ -246,12 +251,12 @@ const Screen = ({ displayMenu, painel, text, isVisible, children }: ScreenProps)
         <LogoContainer>
           {painel && (
             <ButtonMenu className="menu-painel" onClick={displayMenu}>
-              {isVisible ? <CloseOutlined /> : <MenuOutlined />}
+              <MenuOutlined />
             </ButtonMenu>
           )}
           {!painel && (
             <ButtonMenu className="menu-home" onClick={handleDisplayMenuHome}>
-              {menuHomeIsVisible ? <CloseOutlined /> : <MenuOutlined />}
+              <MenuOutlined />
             </ButtonMenu>
           )}
           <LogoLink to={"/"}>
@@ -269,6 +274,42 @@ const Screen = ({ displayMenu, painel, text, isVisible, children }: ScreenProps)
         </LogoContainer>
 
         <UserMenuContainer>
+          {painel && (
+            <Select
+              style={{ width: 200, marginTop: 8 }}
+              placeholder="Selecione uma loja"
+              value={selectedLojaId}
+              onChange={(value) => {
+                if (value === selectedLojaId) return;
+                if (value === "create") {
+                  navigate(RoutesEnum.CreateStore);
+                } else {
+                  handleChangeLoja(value);
+                }
+              }}
+              loading={!lojas}
+              optionLabelProp="label"
+              options={[
+                {
+                  label: "Minhas Lojas",
+                  options:
+                    lojas?.map((l) => ({
+                      label: l.store,
+                      value: l.idDocument,
+                    })) || [],
+                },
+                {
+                  label: "Outras opções",
+                  options: [
+                    {
+                      label: "➕ Criar nova loja",
+                      value: "create",
+                    },
+                  ],
+                },
+              ]}
+            />
+          )}
           {isCheckingAuth ? null : user?.uid ? (
             <MenuUser menu={{ items: itemsUser }} placement="bottomRight" arrow>
               <UserButton>

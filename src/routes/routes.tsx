@@ -11,6 +11,7 @@ import Validitys from "../pages/Painel/Validitys/ValiditysDashboard/ValiditysDas
 import ValidityManager from "../pages/Painel/Validitys/ValidityManager/ValidityManager";
 import ImportProduct from "../pages/Painel/Data/ImportProduct/ImportProduct";
 import Configuration from "../pages/Painel/Configuration/Configuration";
+import CreateStore from "../pages/Painel/CreateStore/CreateStore";
 
 export const screensRoutes: RouteObject[] = [
   {
@@ -64,5 +65,9 @@ export const loggedScreensRoutes: RouteObject[] = [
   {
     path: RoutesEnum.Configuration,
     element: <Configuration />,
+  },
+  {
+    path: RoutesEnum.CreateStore,
+    element: <CreateStore />,
   },
 ];

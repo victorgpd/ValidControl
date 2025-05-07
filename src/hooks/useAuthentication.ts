@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { auth } from "../firebase/config";
-import { AuthError, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from "firebase/auth";
 import { useAppDispatch } from "./store";
 import { setUser } from "../redux/globalReducer/slice";
 import { useNotification } from "./useNotification";
@@ -9,6 +8,7 @@ import { redirect } from "react-router-dom";
 import { useDocument } from "./useDocument";
 import { Timestamp } from "firebase/firestore";
 import { RoutesEnum } from "../enums/routes";
+import { AuthError, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from "firebase/auth";
 
 const useAuthentication = () => {
   const dispatch = useAppDispatch();
@@ -86,7 +86,15 @@ const useAuthentication = () => {
       let loja: InformacoesType;
       if (user.name) {
         loja = {
-          logs: [],
+          logs: [
+            {
+              id: 1,
+              user: user.email,
+              date: new Date().toLocaleString(),
+              action: "Criação da loja",
+              data: user.name,
+            },
+          ],
           products: [],
           validitys: [],
           name: user.name,
@@ -95,13 +103,23 @@ const useAuthentication = () => {
           createdBy: user.email,
           store: user.nameStore!,
           createdAt: Timestamp.now(),
+          uid: data.uid,
         };
       } else {
         loja = {
-          logs: [],
+          logs: [
+            {
+              id: 1,
+              user: user.email,
+              date: new Date().toLocaleString(),
+              action: "Criação da loja",
+              data: null,
+            },
+          ],
+          name: null,
           products: [],
           validitys: [],
-          name: null,
+          uid: data.uid,
           lengthBarcode: 0,
           access: [user.email],
           createdBy: user.email,

@@ -10,12 +10,13 @@ import { useAppDispatch, useAppSelector } from "../../hooks/store";
 import { useRealtimeDocuments } from "../../hooks/useRealtimeDocuments";
 import useAuthentication from "../../hooks/useAuthentication";
 
-import { setLoja, setOpenCurrentMenu } from "../../redux/globalReducer/slice";
+import { setLoja, setLojas, setOpenCurrentMenu, setSelectedLojaId } from "../../redux/globalReducer/slice";
 import { RoutesEnum } from "../../enums/routes";
 
 import { Container, Info, InfoContainer, MenuContainer, MenuList, PainelContainer } from "./styles";
 
 import { WhereFilterOp } from "firebase/firestore";
+import { StoresType, ValidityType } from "../../types/types";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -29,7 +30,7 @@ const Painel = ({ children, title }: PainelProps) => {
   const dispatch = useAppDispatch();
 
   const { logout } = useAuthentication();
-  const { user, openCurrentMenu } = useAppSelector((state) => state.globalReducer);
+  const { user, openCurrentMenu, lojas, selectedLojaId } = useAppSelector((state) => state.globalReducer);
 
   const conditions = useMemo(() => {
     return user?.email ? [{ field: "access", op: "array-contains" as WhereFilterOp, value: user?.email }] : [];
@@ -37,7 +38,8 @@ const Painel = ({ children, title }: PainelProps) => {
 
   const { documents } = useRealtimeDocuments("lojas", conditions);
 
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+
   const [message, setMessage] = useState("");
   const [openCurrent, setOpenCurrent] = useState<string[]>(openCurrentMenu);
 
@@ -114,16 +116,58 @@ const Painel = ({ children, title }: PainelProps) => {
 
   useEffect(() => {
     if (documents) {
+      const stores: StoresType[] = [];
+
+      documents.map((store: any) => {
+        stores.push({
+          store: store.store,
+          access: store.access,
+          idDocument: store.id,
+        });
+      });
+
+      dispatch(setLojas(stores));
+
+      const storeSelected = documents.find((store: any) => store.id === selectedLojaId);
+      if (!storeSelected) return;
+
+      const now = new Date();
+      now.setHours(0, 0, 0, 0); // Zera o horário
+
+      const aVencer: ValidityType[] = [];
+      const vencidos: ValidityType[] = [];
+
+      storeSelected.validitys.forEach((validade: ValidityType) => {
+        if (!validade.date) return;
+
+        const date = new Date(validade.date + "T00:00:00");
+        if (isNaN(date.getTime())) return;
+
+        if (date >= now) {
+          aVencer.push(validade);
+        } else {
+          vencidos.push(validade);
+        }
+      });
+
       dispatch(
         setLoja({
-          ...documents,
-          idDocument: documents.id,
-          createdAt: documents.createdAt?.toDate().toISOString(),
-          updatedAt: documents.updatedAt?.toDate().toISOString(),
+          ...storeSelected,
+          aVencer: [...aVencer],
+          vencidos: [...vencidos],
+          idDocument: storeSelected.id,
+          createdAt: storeSelected.createdAt?.toDate().toISOString(),
+          updatedAt: storeSelected.updatedAt?.toDate().toISOString(),
         })
       );
     }
-  }, [documents, dispatch]);
+  }, [documents, dispatch, selectedLojaId]);
+
+  useEffect(() => {
+    if (lojas && lojas.length > 0 && !selectedLojaId) {
+      dispatch(setSelectedLojaId(lojas[0].idDocument || null));
+    }
+  }, [lojas, selectedLojaId]);
 
   useEffect(() => {
     const hour = new Date().getHours();
@@ -153,7 +197,7 @@ const Painel = ({ children, title }: PainelProps) => {
       <MenuContainer isVisible={isVisible}>
         <InfoContainer>
           <Info className="greeting">
-            {message}, {name} 👋!
+            {message}, {name}👋!
           </Info>
           <Info className="welcome">Seja bem-vindo ao seu painel!</Info>
         </InfoContainer>

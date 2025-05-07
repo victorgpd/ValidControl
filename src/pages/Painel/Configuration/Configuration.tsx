@@ -6,17 +6,22 @@ import { useEffect, useState } from "react";
 import { Timestamp } from "firebase/firestore";
 import { auth } from "../../../firebase/config";
 import { updateEmail, updateProfile } from "firebase/auth";
-import { setOpenCurrentMenu, setUser } from "../../../redux/globalReducer/slice";
+import { setLoja, setOpenCurrentMenu, setUser } from "../../../redux/globalReducer/slice";
 import { useNotification } from "../../../hooks/useNotification";
 import { useAppDispatch, useAppSelector } from "../../../hooks/store";
-import { ConfigurationContainer, ConfigurationPage, ProfileSection, Image, ImageContainer, InputConfiguration, InputsContainer, InputContainer, Label } from "./styles";
+import { ConfigurationContainer, ConfigurationPage, ProfileSection, Image, ImageContainer, InputConfiguration, InputsContainer, InputContainer, Label, ButtonContainer } from "./styles";
 import { useDocument } from "../../../hooks/useDocument";
+import { useFields } from "../../../hooks/useFields";
+import { useNavigate } from "react-router-dom";
 
 const Configuration = () => {
   useTitle("Configurações");
 
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
+
   const { updateDocument } = useDocument("lojas");
+  const { removeItemFromArray } = useFields("lojas");
   const { contextHolder, showNotification } = useNotification();
   const { user, loja } = useAppSelector((state) => state.globalReducer);
 
@@ -172,6 +177,19 @@ const Configuration = () => {
     }
   };
 
+  const handleLogoutStore = async () => {
+    try {
+      await removeItemFromArray(loja?.idDocument!, "access", user?.email);
+      showNotification("success", "Sucesso", "Removido da loja com sucesso.");
+    } catch (error) {
+      console.error(error);
+      showNotification("error", "Erro", "Erro ao sair da loja.");
+    } finally {
+      dispatch(setLoja(null));
+      navigate("/painel/dashboard");
+    }
+  };
+
   const handleEditLoja = async () => {
     setLoadingLoja(true);
 
@@ -232,7 +250,6 @@ const Configuration = () => {
 
           {loja ? (
             <InputsContainer>
-              {/* Inputs da Loja */}
               <InputContainer>
                 <Label>Nome da Loja:</Label>
                 <InputConfiguration name="store" value={lojaConfiguration.store ?? "Não informado"} disabled={disabledInputsLoja} onChange={handleInputLojaChange} />
@@ -243,19 +260,24 @@ const Configuration = () => {
                 <InputConfiguration name="lengthBarcode" type="number" value={lojaConfiguration.lengthBarcode ?? "Não informado"} disabled={disabledInputsLoja} onChange={handleInputLojaChange} />
               </InputContainer>
 
-              {/* Access Emails */}
               <InputContainer>
                 <Label>Acesso (Emails):</Label>
-                <div style={{ display: "flex", gap: "8px", marginBottom: "8px" }}>
-                  <InputConfiguration placeholder="Adicionar email" value={newAccessEmail} disabled={disabledInputsLoja} onChange={(e) => setNewAccessEmail(e.target.value)} />
-                  <Button type="primary" disabled={disabledInputsLoja} onClick={handleAddAccessEmail}>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
+                  <InputConfiguration
+                    placeholder="Adicionar email"
+                    value={newAccessEmail}
+                    disabled={disabledInputsLoja}
+                    onPressEnter={handleAddAccessEmail}
+                    onChange={(e) => setNewAccessEmail(e.target.value)}
+                  />
+                  <Button type="primary" disabled={loja?.access?.includes(newAccessEmail.trim())} onClick={handleAddAccessEmail}>
                     Adicionar
                   </Button>
                 </div>
                 {lojaConfiguration.access.map((email, index) => (
                   <div key={index} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "4px" }}>
                     <InputConfiguration value={email} disabled style={{ flex: 1 }} />
-                    <Button danger onClick={() => handleRemoveAccessEmail(email)} disabled={disabledInputsLoja} style={{ marginLeft: "8px" }}>
+                    <Button danger onClick={() => handleRemoveAccessEmail(email)} disabled={email === userConfiguration.email || email === loja.createdBy} style={{ marginLeft: "8px" }}>
                       Remover
                     </Button>
                   </div>
@@ -281,9 +303,14 @@ const Configuration = () => {
             <p style={{ color: "#999" }}>Nenhuma informação disponível da loja.</p>
           )}
 
-          <Button onClick={handleEditLoja} loading={loadingLoja} disabled={disabledLoja} type="primary" style={{ width: "100px" }}>
-            Salvar
-          </Button>
+          <ButtonContainer>
+            <Button onClick={handleEditLoja} loading={loadingLoja} disabled={disabledLoja} type="primary" style={{ width: "100px" }}>
+              Salvar
+            </Button>
+            <Button onClick={handleLogoutStore} variant="outlined" color="danger" style={{ width: "100px" }}>
+              Sair da loja
+            </Button>
+          </ButtonContainer>
         </ConfigurationContainer>
       </ConfigurationPage>
     </Painel>

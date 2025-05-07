@@ -2,100 +2,40 @@ import useTitle from "../../../hooks/useTitle";
 import Painel from "../../../components/Painel/Painel";
 
 import { useEffect, useState } from "react";
+import { Timestamp } from "firebase/firestore";
 import { ValidityType } from "../../../types/types";
 import { useAppSelector } from "../../../hooks/store";
-import { ContainerCards, ContainerGraph, ContainerGraphs, DashboardContainer, Graph, GraphTitle, InfoCard, InfoTitle, InfoValue } from "./styles";
-import { Timestamp } from "firebase/firestore";
+import { CardContent, ContainerCards, ContainerGraph, ContainerGraphs, DashboardContainer, Graph, GraphTitle, IconCircle, InfoCard, InfoLabel, InfoValue, TextGroup } from "./styles";
+import { AppstoreFilled, CalendarFilled, ClockCircleOutlined, CloseCircleFilled, ShopOutlined, UsergroupAddOutlined, UserOutlined, WarningFilled } from "@ant-design/icons";
 
 const Dashboard = () => {
   useTitle("Dashboard");
 
+  const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+
   const { loja } = useAppSelector((state) => state.globalReducer);
 
-  const [info, setInfo] = useState<{ aVencer: ValidityType[] | null; vencidos: ValidityType[] | null }>({
-    aVencer: null,
-    vencidos: null,
-  });
-
   const [data, setData] = useState(
-    Array.from({ length: 15 }, (_, i) => ({
-      day: `${i + 1}`,
+    months.map((month) => ({
+      month,
       frequency: 0,
-    }))
-  );
-  const [vencidosData, setVencidosData] = useState(
-    Array.from({ length: 15 }, (_, i) => ({
-      day: `${i + 1}`,
-      frequency: 0,
+      type: "A vencer",
     }))
   );
 
   const config = {
     data,
-    xField: "day",
+    xField: "month",
     yField: "frequency",
-    onReady: (params: {
-      chart: {
-        _container: HTMLElement;
-        on: (eventName: string, callback: () => void, once?: boolean) => void;
-        emit: (eventName: string, payload: { data: { data: (typeof data)[number] }; offsetY: number }) => void;
-      };
-    }) => {
-      try {
-        const { height } = params.chart._container.getBoundingClientRect();
-        const tooltipItem = data[Math.floor(Math.random() * data.length)];
-        params.chart.on(
-          "afterrender",
-          () => {
-            params.chart.emit("tooltip:show", {
-              data: {
-                data: tooltipItem,
-              },
-              offsetY: height / 2 - 60,
-            });
-          },
-          true
-        );
-      } catch (e) {
-        console.error(e);
-      }
-    },
-  };
-
-  const configVencidos = {
-    data: vencidosData,
-    xField: "day",
-    yField: "frequency",
-    onReady: (params: {
-      chart: {
-        _container: HTMLElement;
-        on: (eventName: string, callback: () => void, once?: boolean) => void;
-        emit: (eventName: string, payload: { data: { data: (typeof data)[number] }; offsetY: number }) => void;
-      };
-    }) => {
-      try {
-        const { height } = params.chart._container.getBoundingClientRect();
-        const tooltipItem = vencidosData[Math.floor(Math.random() * vencidosData.length)];
-        params.chart.on(
-          "afterrender",
-          () => {
-            params.chart.emit("tooltip:show", {
-              data: {
-                data: tooltipItem,
-              },
-              offsetY: height / 2 - 60,
-            });
-          },
-          true
-        );
-      } catch (e) {
-        console.error(e);
-      }
+    colorField: "type",
+    group: true,
+    style: {
+      inset: 5,
     },
   };
 
   function formatDate(date: string | Timestamp | null | undefined) {
-    if (!date) return "Indisponível";
+    if (!date) return "";
 
     if (typeof date === "string") {
       return new Date(date).toLocaleDateString("pt-BR");
@@ -106,50 +46,36 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (loja?.validitys) {
-      const date = new Date();
+      const now = new Date();
 
-      const newData = Array.from({ length: 15 }, (_, i) => ({
-        day: `${i + 1}`,
-        frequency: 0,
-      }));
-      const newVencidos = Array.from({ length: 15 }, (_, i) => ({
-        day: `${i + 1}`,
-        frequency: 0,
-      }));
+      const dataGrouped: { month: string; frequency: number; type: string }[] = [];
 
-      const aVencer = loja.validitys.filter((validade: ValidityType) => {
-        const dataValidity = new Date(validade.date + "T00:00:00"); // Adiciona um horário para evitar problemas de fuso horário
+      months.forEach((month) => {
+        dataGrouped.push({ month, frequency: 0, type: "A vencer" });
+        dataGrouped.push({ month, frequency: 0, type: "Vencido" });
+      });
 
-        const diferenca = dataValidity.getTime() - date.getTime();
-        const dias = Math.floor(diferenca / (1000 * 60 * 60 * 24));
+      loja.validitys.forEach((validade: ValidityType) => {
+        if (!validade.date) return;
 
-        if (dias >= 0 && dias < 15) {
-          newData[dias].frequency += 1;
-          return true;
+        const date = new Date(validade.date + "T00:00:00");
+        if (isNaN(date.getTime())) return;
+
+        const month = months[date.getMonth()];
+
+        if (date > now) {
+          const item = dataGrouped.find((d) => d.month === month && d.type === "A vencer");
+          if (item) item.frequency += 1;
+        } else if (date.toDateString() === now.toDateString()) {
+          const item = dataGrouped.find((d) => d.month === month && d.type === "A vencer");
+          if (item) item.frequency += 1;
+        } else {
+          const item = dataGrouped.find((d) => d.month === month && d.type === "Vencido");
+          if (item) item.frequency += 1;
         }
-        return false;
       });
 
-      const vencidos = loja.validitys.filter((validade: ValidityType) => {
-        const dataValidity = new Date(validade.date + "T00:00:00"); // Adiciona um horário para evitar problemas de fuso horário
-
-        const diferenca = dataValidity.getTime() - date.getTime();
-        const dias = Math.floor(diferenca / (1000 * 60 * 60 * 24));
-        const index = Math.abs(dias) - 1;
-        if (dias < 0 && index < 15) {
-          newVencidos[index].frequency += 1;
-          return true;
-        }
-        return false;
-      });
-
-      setData(newData);
-      setVencidosData(newVencidos);
-
-      setInfo({
-        aVencer,
-        vencidos,
-      });
+      setData(dataGrouped);
     }
   }, [loja]);
 
@@ -157,66 +83,107 @@ const Dashboard = () => {
     <Painel title="Dashboard">
       <DashboardContainer>
         <ContainerCards>
-          {/* Cards de informações */}
           <InfoCard>
-            <InfoTitle>Nome da loja:</InfoTitle>
-            <InfoValue>{loja?.store}</InfoValue>
+            <CardContent>
+              <IconCircle bg="#E9D5FF" color="#7C3AED">
+                <ShopOutlined />
+              </IconCircle>
+              <TextGroup>
+                <InfoValue>{loja?.store}</InfoValue>
+                <InfoLabel>Nome da loja</InfoLabel>
+              </TextGroup>
+            </CardContent>
           </InfoCard>
 
           <InfoCard>
-            <InfoTitle>Nome do criador:</InfoTitle>
-            <InfoValue>{loja?.name}</InfoValue>
+            <CardContent>
+              <IconCircle bg="#C7D2FE" color="#4F46E5">
+                <UserOutlined />
+              </IconCircle>
+              <TextGroup>
+                <InfoValue>{loja?.name}</InfoValue>
+                <InfoLabel>Criador</InfoLabel>
+              </TextGroup>
+            </CardContent>
           </InfoCard>
 
           <InfoCard>
-            <InfoTitle>Loja criada:</InfoTitle>
-            <InfoValue>{formatDate(loja?.createdAt)}</InfoValue>
+            <CardContent>
+              <IconCircle bg="#BFDBFE" color="#2563EB">
+                <ClockCircleOutlined />
+              </IconCircle>
+              <TextGroup>
+                <InfoValue>{formatDate(loja?.createdAt)}</InfoValue>
+                <InfoLabel>Criada em</InfoLabel>
+              </TextGroup>
+            </CardContent>
           </InfoCard>
 
           <InfoCard>
-            <InfoTitle>Produtos Cadastrados:</InfoTitle>
-            <InfoValue>
-              {loja?.products?.length} {loja?.products?.length === 1 ? "produto" : "produtos"}
-            </InfoValue>
+            <CardContent>
+              <IconCircle bg="#DDD6FE" color="#7C3AED">
+                <AppstoreFilled />
+              </IconCircle>
+              <TextGroup>
+                <InfoValue>{loja?.products?.length}</InfoValue>
+                <InfoLabel>Produtos</InfoLabel>
+              </TextGroup>
+            </CardContent>
           </InfoCard>
 
           <InfoCard>
-            <InfoTitle>Validades Cadastradas:</InfoTitle>
-            <InfoValue>
-              {loja?.validitys?.length} {loja?.validitys?.length === 1 ? "validade" : "validades"}
-            </InfoValue>
+            <CardContent>
+              <IconCircle bg="#BFDBFE" color="#2563EB">
+                <CalendarFilled />
+              </IconCircle>
+              <TextGroup>
+                <InfoValue>{loja?.validitys?.length}</InfoValue>
+                <InfoLabel>Validades</InfoLabel>
+              </TextGroup>
+            </CardContent>
           </InfoCard>
 
           <InfoCard>
-            <InfoTitle>A vencer:</InfoTitle>
-            <InfoValue>
-              {info.aVencer?.length} {info.aVencer?.length === 1 ? "produto" : "produtos"} a vencer
-            </InfoValue>
+            <CardContent>
+              <IconCircle bg="#FDE68A" color="#F59E0B">
+                <WarningFilled />
+              </IconCircle>
+              <TextGroup>
+                <InfoValue>{loja?.aVencer?.length}</InfoValue>
+                <InfoLabel>A vencer</InfoLabel>
+              </TextGroup>
+            </CardContent>
           </InfoCard>
 
           <InfoCard>
-            <InfoTitle>Vencidos:</InfoTitle>
-            <InfoValue>
-              {info.vencidos?.length} {info.vencidos?.length === 1 ? "produto vencido" : "produtos vencidos"}
-            </InfoValue>
+            <CardContent>
+              <IconCircle bg="#FCA5A5" color="#EF4444">
+                <CloseCircleFilled />
+              </IconCircle>
+              <TextGroup>
+                <InfoValue>{loja?.vencidos?.length}</InfoValue>
+                <InfoLabel>Vencidos</InfoLabel>
+              </TextGroup>
+            </CardContent>
           </InfoCard>
 
           <InfoCard>
-            <InfoTitle>Usuários da loja:</InfoTitle>
-            <InfoValue>
-              {loja?.access?.length} {loja?.access?.length === 1 ? "usuário" : "usuários"}
-            </InfoValue>
+            <CardContent>
+              <IconCircle bg="#BBF7D0" color="#10B981">
+                <UsergroupAddOutlined />
+              </IconCircle>
+              <TextGroup>
+                <InfoValue>{loja?.access?.length}</InfoValue>
+                <InfoLabel>Usuários</InfoLabel>
+              </TextGroup>
+            </CardContent>
           </InfoCard>
         </ContainerCards>
 
         <ContainerGraph>
           <ContainerGraphs>
-            <GraphTitle>Produtos a Vencer nos Próximos 15 Dias</GraphTitle>
+            <GraphTitle>Distribuição de validades</GraphTitle>
             <Graph {...config} />
-          </ContainerGraphs>
-          <ContainerGraphs>
-            <GraphTitle>Produtos Vencidos nos Últimos 15 Dias</GraphTitle>
-            <Graph {...configVencidos} />
           </ContainerGraphs>
         </ContainerGraph>
       </DashboardContainer>

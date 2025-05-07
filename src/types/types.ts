@@ -43,10 +43,18 @@ interface LogType {
   data: ProductType | ValidityType | string | null;
 }
 
+export interface StoresType {
+  store: string | null;
+  access: string[] | null;
+  idDocument?: string | undefined;
+}
+
 export interface InformacoesType {
+  uid: string | null;
   name: string | null;
   store: string | null;
   logs: LogType[] | null;
+  access: string[] | null;
   createdBy: string | null;
   lengthBarcode: number | null;
   products: ProductType[] | null;
@@ -56,5 +64,4 @@ export interface InformacoesType {
   validitys: ValidityType[] | null;
   createdAt: string | Timestamp | null;
   updateAt?: string | Timestamp | null;
-  access: string[] | null;
 }

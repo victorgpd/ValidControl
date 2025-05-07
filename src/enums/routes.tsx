@@ -3,6 +3,8 @@ export enum RoutesEnum {
   Login = "/login",
   Register = "/register",
 
+  CreateStore = "/painel/create-store",
+
   Dashboard = "/painel/dashboard",
 
   Products = "/painel/products",

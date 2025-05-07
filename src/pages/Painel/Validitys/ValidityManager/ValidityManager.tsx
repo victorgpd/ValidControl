@@ -154,7 +154,7 @@ const ValidityManager = () => {
             </ContainerInput>
           </FormAntd.Item>
 
-          <FormAntd.Item name="barcode" style={{ width: "100%" }} rules={[{ required: false, message: "Por favor, selecione o código de barras!" }]}>
+          <FormAntd.Item name="barcode" style={{ width: "100%" }}>
             <ContainerInput>
               <Label>Código de Barras:</Label>
               <ContainerInputButton>
@@ -216,24 +216,24 @@ const ValidityManager = () => {
             </ContainerInput>
           </FormAntd.Item>
 
-          <FormAntd.Item name="name" style={{ width: "100%" }} rules={[{ required: false, message: "Por favor, insira a descrição do produto!" }]}>
+          <FormAntd.Item name="name" style={{ width: "100%" }}>
             <ContainerInput>
               <Label>Descrição do Produto:</Label>
               <InputNew disabled={disabled} size="large" name="name" value={validity.name} onChange={handleChange} placeholder="Digite a descrição" required />
             </ContainerInput>
           </FormAntd.Item>
 
-          <FormAntd.Item name="quantity" style={{ width: "100%" }} rules={[{ required: true, min: 1, message: "Por favor, insira a quantidade!" }]}>
+          <FormAntd.Item name="quantity" style={{ width: "100%" }}>
             <ContainerInput>
               <Label>Quant. de Produtos:</Label>
-              <InputNew type="number" size="large" name="quantity" value={validity.quantity} onChange={handleChange} placeholder="Digite a quantidade" />
+              <InputNew type="number" size="large" name="quantity" value={validity.quantity} onChange={handleChange} placeholder="Digite a quantidade" required />
             </ContainerInput>
           </FormAntd.Item>
 
-          <FormAntd.Item name="date" style={{ width: "100%" }} rules={[{ required: true, message: "Por favor, insira a data de validade!" }]}>
+          <FormAntd.Item name="date" style={{ width: "100%" }}>
             <ContainerInput>
               <Label>Data de Validade:</Label>
-              <InputNew type="date" size="large" name="date" value={validity.date} onChange={handleChange} />
+              <InputNew type="date" size="large" name="date" value={validity.date} onChange={handleChange} required />
             </ContainerInput>
           </FormAntd.Item>
 

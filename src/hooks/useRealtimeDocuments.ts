@@ -5,7 +5,7 @@ import { WhereFilterOp } from "firebase/firestore";
 import { collection, onSnapshot, query, where, orderBy } from "firebase/firestore";
 
 export function useRealtimeDocuments<T = any>(collectionName: string, conditions: { field: string; op: WhereFilterOp; value: any }[] = [], orderField?: string) {
-  const [documents, setDocuments] = useState<T>();
+  const [documents, setDocuments] = useState<T[]>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -24,7 +24,7 @@ export function useRealtimeDocuments<T = any>(collectionName: string, conditions
       q,
       (snapshot) => {
         const docs = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })) as T[];
-        setDocuments(docs[0]);
+        setDocuments(docs);
         setLoading(false);
       },
       (err) => {

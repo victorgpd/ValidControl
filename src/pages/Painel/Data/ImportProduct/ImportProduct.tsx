@@ -13,7 +13,7 @@ import { setOpenCurrentMenu } from "../../../../redux/globalReducer/slice";
 import { Container, ContainerInput, ImportProductPage, Label, ContainerButton } from "./styles";
 
 interface ProductData {
-  [key: string]: string | number | undefined; // Permite acesso dinâmico às propriedades
+  [key: string]: string | number | undefined;
 }
 
 const ImportProduct = () => {
@@ -41,10 +41,17 @@ const ImportProduct = () => {
   }, []);
 
   const handleFileUpload = () => {
-    const file = fileInputRef.current?.input?.files?.[0]; // Usando .input para acessar o campo de arquivo
+    const file = fileInputRef.current?.input?.files?.[0];
     if (!file) {
       setMessage("Por favor, selecione um arquivo!");
-      // showNotification() can be added here
+      showNotification("warning", "Atenção", "Por favor, selecione um arquivo!");
+      return;
+    }
+
+    // Validando o tipo do arquivo
+    if (!/\.(xlsx|xls|csv)$/i.test(file.name)) {
+      setMessage("Arquivo inválido. Por favor, escolha um arquivo Excel (.xlsx, .xls) ou CSV.");
+      showNotification("warning", "Atenção", "Arquivo inválido. Por favor, escolha um arquivo Excel (.xlsx, .xls) ou CSV.");
       return;
     }
 
@@ -67,6 +74,7 @@ const ImportProduct = () => {
 
       let jsonData: ProductData[] = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
 
+      // Verificar se as colunas necessárias existem
       if (!(fields.id in jsonData[0]) || !(fields.barcode in jsonData[0]) || !(fields.name in jsonData[0])) {
         setData([]);
         setMessage("Preencha os campos da tabela corretamente!");
@@ -74,31 +82,38 @@ const ImportProduct = () => {
         return;
       }
 
+      // Validar e corrigir os dados
       const produtosCorrigidos = jsonData
         .map((item) => {
-          if (item[fields.barcode]) {
-            const codigoBarras = item[fields.barcode]!.toString();
-            if (codigoBarras === "") return null;
-
-            let barcodeCorrigido = codigoBarras;
-            if (codigoBarras!.length <= loja?.lengthBarcode! && codigoBarras!.length >= 1) {
-              barcodeCorrigido = "0".repeat(loja?.lengthBarcode! - codigoBarras!.length) + codigoBarras;
-            }
-
-            const idProduto = Number(item[fields.id]);
-            if (isNaN(idProduto)) return null;
-
-            return {
-              id: idProduto,
-              name: item["Produto"] || "",
-              barcode: barcodeCorrigido,
-            };
+          if (!item[fields.barcode] || !item[fields.id] || !item[fields.name]) {
+            return null;
           }
-          return null;
+
+          const codigoBarras = item[fields.barcode]!.toString();
+          if (codigoBarras === "") return null;
+
+          let barcodeCorrigido = codigoBarras;
+          if (codigoBarras.length <= loja?.lengthBarcode! && codigoBarras.length >= 1) {
+            barcodeCorrigido = "0".repeat(loja?.lengthBarcode! - codigoBarras.length) + codigoBarras;
+          }
+
+          const idProduto = Number(item[fields.id]);
+          if (isNaN(idProduto)) return null;
+
+          return {
+            id: idProduto,
+            name: item[fields.name] || "",
+            barcode: barcodeCorrigido,
+          };
         })
         .filter((item): item is ProductType => item !== null);
 
-      setData(produtosCorrigidos);
+      if (produtosCorrigidos.length === 0) {
+        setMessage("Não há produtos válidos no arquivo!");
+        showNotification("warning", "Atenção", "Não há produtos válidos no arquivo!");
+      } else {
+        setData(produtosCorrigidos);
+      }
     };
 
     reader.readAsBinaryString(file);
@@ -111,11 +126,14 @@ const ImportProduct = () => {
 
   const handleSubmit = async () => {
     if (message !== "") {
-      showNotification("warning", "Atenção", message);
+      showNotification("warning", "Atenção", "Por favor, importe os produtos!");
       return;
     }
 
-    if (!loja?.idDocument) return;
+    if (!loja?.idDocument) {
+      showNotification("warning", "Atenção", "Loja não identificada. Por favor, selecione uma loja.");
+      return;
+    }
 
     await addItemToArray(loja?.idDocument, "products", data);
 
@@ -124,6 +142,7 @@ const ImportProduct = () => {
     }
 
     setData([]);
+    showNotification("success", "Sucesso", "Produtos importados com sucesso!");
   };
 
   return (
@@ -131,7 +150,7 @@ const ImportProduct = () => {
       <ImportProductPage>
         <Container direction="column">
           <h2>Nome dos campos na tabela</h2>
-          <div style={{ width: "100%", gap: "40px", display: "flex", flexWrap: "wrap" }}>
+          <div style={{ width: "100%", gap: "20px", display: "flex", flexWrap: "wrap", justifyContent: "space-between" }}>
             <ContainerInput>
               <Label>Cód. Produto: </Label>
               <Input name="id" value={fields.id} onChange={handleChange} placeholder="Cód. Produto" size="middle" />

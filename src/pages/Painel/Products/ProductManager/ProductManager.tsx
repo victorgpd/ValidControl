@@ -99,17 +99,17 @@ const ProductManager = () => {
             </ContainerInput>
           </FormAntd.Item>
 
-          <FormAntd.Item name="barcode" style={{ width: "100%" }} rules={[{ required: true, message: "Por favor, insira o código de barras!" }]}>
+          <FormAntd.Item name="barcode" style={{ width: "100%" }}>
             <ContainerInput>
               <Label>Código de Barras:</Label>
-              <InputNew size="large" name="barcode" value={product.barcode} onChange={handleChange} placeholder="Digite o código de barras" />
+              <InputNew size="large" name="barcode" value={product.barcode} onChange={handleChange} placeholder="Digite o código de barras" required />
             </ContainerInput>
           </FormAntd.Item>
 
-          <FormAntd.Item name="name" style={{ width: "100%" }} rules={[{ required: true, message: "Por favor, insira a descrição do produto!" }]}>
+          <FormAntd.Item name="name" style={{ width: "100%" }}>
             <ContainerInput>
               <Label>Descrição do Produto:</Label>
-              <InputNew size="large" name="name" value={product.name} onChange={handleChange} placeholder="Digite a descrição" />
+              <InputNew size="large" name="name" value={product.name} onChange={handleChange} placeholder="Digite a descrição" required />
             </ContainerInput>
           </FormAntd.Item>
 

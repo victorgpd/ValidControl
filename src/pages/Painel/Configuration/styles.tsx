@@ -56,19 +56,6 @@ export const ImageContainer = styled.label`
   display: flex;
   align-items: center;
   justify-content: center;
-
-  /* cursor: pointer; */
-  /* &:hover::after {
-    content: "Editar";
-    position: absolute;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.6);
-    width: 100%;
-    color: #fff;
-    text-align: center;
-    font-size: 14px;
-    padding: 4px 0;
-  } */
 `;
 
 export const Image = styled.img`
@@ -107,4 +94,11 @@ export const Label = styled.label`
 export const InputConfiguration = styled(Input)`
   padding: 10px 14px;
   border-radius: 8px;
+`;
+
+export const ButtonContainer = styled.div`
+  width: 100%;
+
+  gap: 20px;
+  display: flex;
 `;
