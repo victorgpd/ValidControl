@@ -252,12 +252,19 @@ const Configuration = () => {
             <InputsContainer>
               <InputContainer>
                 <Label>Nome da Loja:</Label>
-                <InputConfiguration name="store" value={lojaConfiguration.store ?? "Não informado"} disabled={disabledInputsLoja} onChange={handleInputLojaChange} />
+                <InputConfiguration name="store" value={lojaConfiguration.store ?? "Não informado"} disabled={disabledInputsLoja} onChange={handleInputLojaChange} onPressEnter={handleEditLoja} />
               </InputContainer>
 
               <InputContainer>
                 <Label>Tamanho do Código de Barras:</Label>
-                <InputConfiguration name="lengthBarcode" type="number" value={lojaConfiguration.lengthBarcode ?? "Não informado"} disabled={disabledInputsLoja} onChange={handleInputLojaChange} />
+                <InputConfiguration
+                  name="lengthBarcode"
+                  type="number"
+                  value={lojaConfiguration.lengthBarcode ?? "Não informado"}
+                  disabled={disabledInputsLoja}
+                  onChange={handleInputLojaChange}
+                  onPressEnter={handleEditLoja}
+                />
               </InputContainer>
 
               <InputContainer>
