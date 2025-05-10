@@ -540,7 +540,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
   justify-content: center;
 `,FQe=At.aside`
   width: 256px;
-  height: calc(100dvh - 64px);
+  height: 100dvh;
   padding: 10px 5px;
   background-color: white;
 
@@ -4133,7 +4133,7 @@ ${this.customData.serverResponse}`:this.message=this._baseMessage}}var Qf;(funct
   }
 `,Pst=At.aside`
   width: 250px;
-  height: calc(100dvh - 64px);
+  height: 100dvh;
   padding: 10px 10px;
   background-color: white;
 
