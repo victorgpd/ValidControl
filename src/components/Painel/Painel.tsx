@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { MenuProps } from "antd";
+import { MenuProps, Select } from "antd";
 import { CalendarOutlined, DatabaseOutlined, LogoutOutlined, PieChartOutlined, SettingOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 
 import Screen from "../Screen/Screen";
@@ -202,6 +202,10 @@ const Painel = ({ children, title }: PainelProps) => {
     navigate(RoutesEnum.Login);
   }
 
+  const handleChangeLoja = (value: string) => {
+    dispatch(setSelectedLojaId(value));
+  };
+
   const handleClickMenu: MenuProps["onClick"] = (e) => {
     dispatch(setOpenCurrentMenu(e.keyPath));
   };
@@ -218,6 +222,41 @@ const Painel = ({ children, title }: PainelProps) => {
             {message}, {name}👋!
           </Info>
           <Info className="welcome">Seja bem-vindo ao seu painel!</Info>
+
+          <Select
+            style={{ width: 200, marginTop: "10px" }}
+            placeholder="Selecione uma loja"
+            value={selectedLojaId}
+            onChange={(value) => {
+              if (value === selectedLojaId) return;
+              if (value === "create") {
+                navigate(RoutesEnum.CreateStore);
+              } else {
+                handleChangeLoja(value);
+              }
+            }}
+            loading={!lojas}
+            optionLabelProp="label"
+            options={[
+              {
+                label: "Minhas Lojas",
+                options:
+                  lojas?.map((l) => ({
+                    label: l.store,
+                    value: l.idDocument,
+                  })) || [],
+              },
+              {
+                label: "Outras opções",
+                options: [
+                  {
+                    label: "➕ Criar nova loja",
+                    value: "create",
+                  },
+                ],
+              },
+            ]}
+          />
         </InfoContainer>
 
         <MenuList onClick={handleClickMenu} selectedKeys={openCurrent} mode="inline" theme="light" items={menuItems} />

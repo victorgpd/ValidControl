@@ -22,7 +22,7 @@ export const MenuContainer = styled.aside<{ isVisible: boolean }>`
   padding: 10px 10px;
   background-color: white;
 
-  gap: 40px;
+  gap: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
