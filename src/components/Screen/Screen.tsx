@@ -259,7 +259,7 @@ const Screen = ({ displayMenu, painel, text, children }: ScreenProps) => {
               <MenuOutlined />
             </ButtonMenu>
           )}
-          <LogoLink to={"/"}>
+          <LogoLink to={RoutesEnum.Home}>
             <AppstoreFilled style={{ height: "100%", fontSize: "34px", color: "rgba(16, 185, 129, 1)" }} />
             <span style={{ fontWeight: "500", fontSize: "20px", color: "black" }}>ValidControl</span>
           </LogoLink>
