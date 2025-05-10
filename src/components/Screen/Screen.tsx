@@ -56,22 +56,22 @@ type MenuItem = Required<MenuProps>["items"][number];
 const itemsAnchor = [
   {
     key: "home",
-    href: "/#home",
+    href: "/validcontrol/#home",
     title: "Home",
   },
   {
     key: "overview",
-    href: "/#overview",
+    href: "/validcontrol/#overview",
     title: "Visão geral",
   },
   {
     key: "vantages",
-    href: "/#vantages",
+    href: "/validcontrol/#vantages",
     title: "Vantagens",
   },
   {
     key: "use",
-    href: "/#use",
+    href: "/validcontrol/#use",
     title: "Como usar",
   },
 ];
