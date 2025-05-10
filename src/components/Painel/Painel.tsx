@@ -180,16 +180,20 @@ const Painel = ({ children, title }: PainelProps) => {
   }, [openCurrentMenu]);
 
   useEffect(() => {
-    window.addEventListener("resize", () => {
-      if (window.innerWidth < 750) {
+    const handleResize = () => {
+      if (window.innerWidth < 650) {
         setIsVisible(false);
       } else {
         setIsVisible(true);
       }
-    });
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    handleResize();
 
     return () => {
-      window.removeEventListener("resize", () => {});
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
