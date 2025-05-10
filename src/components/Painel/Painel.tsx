@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { MenuProps, Select } from "antd";
+import { MenuProps } from "antd";
 import { CalendarOutlined, DatabaseOutlined, LogoutOutlined, PieChartOutlined, SettingOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 
 import Screen from "../Screen/Screen";
@@ -13,7 +13,7 @@ import useAuthentication from "../../hooks/useAuthentication";
 import { setLoja, setLojas, setOpenCurrentMenu, setSelectedLojaId } from "../../redux/globalReducer/slice";
 import { RoutesEnum } from "../../enums/routes";
 
-import { Container, Info, InfoContainer, MenuContainer, MenuList, PainelContainer } from "./styles";
+import { Container, Info, InfoContainer, MenuContainer, MenuList, PainelContainer, SelectStore } from "./styles";
 
 import { WhereFilterOp } from "firebase/firestore";
 import { StoresType, ValidityType } from "../../types/types";
@@ -224,8 +224,7 @@ const Painel = ({ children, title }: PainelProps) => {
           </Info>
           <Info className="welcome">Seja bem-vindo ao seu painel!</Info>
 
-          <Select
-            style={{ width: 200, marginTop: "10px" }}
+          <SelectStore
             placeholder="Selecione uma loja"
             value={selectedLojaId}
             onChange={(value) => {
@@ -233,7 +232,7 @@ const Painel = ({ children, title }: PainelProps) => {
               if (value === "create") {
                 navigate(RoutesEnum.CreateStore);
               } else {
-                handleChangeLoja(value);
+                handleChangeLoja(`${value}`);
               }
             }}
             loading={!lojas}

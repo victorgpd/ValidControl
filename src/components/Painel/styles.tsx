@@ -1,4 +1,4 @@
-import { Menu } from "antd";
+import { Menu, Select } from "antd";
 import styled from "styled-components";
 
 export const PainelContainer = styled.div<{ isVisible: boolean }>`
@@ -131,4 +131,9 @@ export const MenuList = styled(Menu)`
       color: #374151 !important;
     }
   }
+`;
+
+export const SelectStore = styled(Select)`
+  width: "200px";
+  margin-top: "10px";
 `;
