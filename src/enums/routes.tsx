@@ -1,21 +1,21 @@
 export enum RoutesEnum {
-  Home = "/",
-  Login = "/login",
-  Register = "/register",
+  Home = "/validcontrol/",
+  Login = "/validcontrol/login",
+  Register = "/validcontrol/register",
 
-  CreateStore = "/painel/create-store",
+  CreateStore = "/validcontrol/painel/create-store",
 
-  Dashboard = "/painel/dashboard",
+  Dashboard = "/validcontrol/painel/dashboard",
 
-  Products = "/painel/products",
-  Product_Create = "/painel/products/create",
-  Product_Edit = "/painel/products/edit/:id",
+  Products = "/validcontrol/painel/products",
+  Product_Create = "/validcontrol/painel/products/create",
+  Product_Edit = "/validcontrol/painel/products/edit/:id",
 
-  Validitys = "/painel/validitys",
-  Validitys_Create = "/painel/validitys/create",
-  Validitys_Edit = "/painel/validitys/edit/:id",
+  Validitys = "/validcontrol/painel/validitys",
+  Validitys_Create = "/validcontrol/painel/validitys/create",
+  Validitys_Edit = "/validcontrol/painel/validitys/edit/:id",
 
-  Data_Import = "/painel/data/import",
+  Data_Import = "/validcontrol/painel/data/import",
 
-  Configuration = "/painel/configuration",
+  Configuration = "/validcontrol/painel/configuration",
 }

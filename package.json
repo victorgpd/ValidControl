@@ -1,13 +1,16 @@
 {
+  "homepage": "https://victorgpd.github.io/validcontrol/",
   "name": "validcontrol",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "vite build && copy dist\\index.html dist\\404.html",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@ant-design/icons": "^5.2.5",
@@ -15,6 +18,7 @@
     "@reduxjs/toolkit": "^1.9.5",
     "antd": "^5.9.3",
     "firebase": "^11.6.0",
+    "gh-pages": "^6.3.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-redux": "^8.1.2",
