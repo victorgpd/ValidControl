@@ -112,7 +112,7 @@ export const ButtonMenu = styled(Button)`
 
 export const MenuContainer = styled.aside<{ isVisible: boolean }>`
   width: 256px;
-  height: calc(100dvh - 64px);
+  height: 100dvh;
   padding: 10px 5px;
   background-color: white;
 
