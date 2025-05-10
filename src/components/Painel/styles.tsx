@@ -18,7 +18,7 @@ export const PainelContainer = styled.div<{ isVisible: boolean }>`
 
 export const MenuContainer = styled.aside<{ isVisible: boolean }>`
   width: 250px;
-  height: calc(100% - 64px);
+  height: calc(100dvh - 64px);
   padding: 10px 10px;
   background-color: white;
 
