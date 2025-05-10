@@ -179,6 +179,20 @@ const Painel = ({ children, title }: PainelProps) => {
     setOpenCurrent(openCurrentMenu);
   }, [openCurrentMenu]);
 
+  useEffect(() => {
+    window.addEventListener("resize", () => {
+      if (window.innerWidth < 750) {
+        setIsVisible(false);
+      } else {
+        setIsVisible(true);
+      }
+    });
+
+    return () => {
+      window.removeEventListener("resize", () => {});
+    };
+  }, []);
+
   function handleLogout() {
     logout();
     navigate(RoutesEnum.Login);
