@@ -43,7 +43,7 @@ export const MenuContainer = styled.aside<{ isVisible: boolean }>`
 
 export const Container = styled.div<{ isVisible: boolean }>`
   width: 100%;
-  height: calc(100% - 64px);
+  height: 100dvh;
   background-color: rgba(0, 0, 0, 0.45);
 
   position: fixed;
