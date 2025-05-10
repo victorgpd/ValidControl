@@ -204,6 +204,7 @@ const Painel = ({ children, title }: PainelProps) => {
 
   const handleChangeLoja = (value: string) => {
     dispatch(setSelectedLojaId(value));
+    setIsVisible(false);
   };
 
   const handleClickMenu: MenuProps["onClick"] = (e) => {
