@@ -4156,7 +4156,7 @@ ${this.customData.serverResponse}`:this.message=this._baseMessage}}var Qf;(funct
   }
 `,Rst=At.div`
   width: 100%;
-  height: calc(100% - 64px);
+  height: 100dvh;
   background-color: rgba(0, 0, 0, 0.45);
 
   position: fixed;
