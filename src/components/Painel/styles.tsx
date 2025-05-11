@@ -134,6 +134,10 @@ export const MenuList = styled(Menu)`
 `;
 
 export const SelectStore = styled(Select)`
-  width: "200px";
-  margin-top: "10px";
+  width: 200px;
+  margin-top: 10px;
+
+  @media screen and (min-width: 650px) {
+    display: none;
+  }
 `;
