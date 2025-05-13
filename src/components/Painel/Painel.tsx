@@ -86,8 +86,8 @@ const Painel = ({ children, title }: PainelProps) => {
           icon: <DatabaseOutlined />,
           children: [
             { key: "data1", label: "Importar produtos", onClick: () => navigate(RoutesEnum.Data_Import) },
-            { key: "data2", label: "Exportar produtos" },
-            { key: "data3", label: "Exportar validades" },
+            { key: "data2", label: "Exportar produtos", onClick: () => navigate(RoutesEnum.Data_Export_Products) },
+            { key: "data3", label: "Exportar validades", onClick: () => navigate(RoutesEnum.Data_Export_Validitys) },
           ],
         },
       ],

@@ -29,6 +29,10 @@ const Validitys = () => {
 
   const [filter, setFilter] = useState<"todos" | "aVencer" | "vencidos">("todos");
 
+  useEffect(() => {
+    dispatch(setOpenCurrentMenu(["validitys", "validity1"]));
+  }, []);
+
   function handleStatus(validityDate: string): string {
     const expiryDate = new Date(validityDate);
     const today = new Date();
@@ -142,10 +146,6 @@ const Validitys = () => {
       },
     });
   }
-
-  useEffect(() => {
-    dispatch(setOpenCurrentMenu(["validitys", "validity1"]));
-  }, []);
 
   return (
     <Painel title="Validades">

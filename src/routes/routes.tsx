@@ -12,6 +12,8 @@ import ValidityManager from "../pages/Painel/Validitys/ValidityManager/ValidityM
 import ImportProduct from "../pages/Painel/Data/ImportProduct/ImportProduct";
 import Configuration from "../pages/Painel/Configuration/Configuration";
 import CreateStore from "../pages/Painel/CreateStore/CreateStore";
+import ExportValiditys from "../pages/Painel/Data/ExportValidity/ExportValidity";
+import ExportProduct from "../pages/Painel/Data/ExportProduct/ExportProduct";
 
 export const screensRoutes: RouteObject[] = [
   {
@@ -61,6 +63,14 @@ export const loggedScreensRoutes: RouteObject[] = [
   {
     path: RoutesEnum.Data_Import,
     element: <ImportProduct />,
+  },
+  {
+    path: RoutesEnum.Data_Export_Validitys,
+    element: <ExportValiditys />,
+  },
+  {
+    path: RoutesEnum.Data_Export_Products,
+    element: <ExportProduct />,
   },
   {
     path: RoutesEnum.Configuration,
