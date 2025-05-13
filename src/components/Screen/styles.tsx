@@ -216,13 +216,20 @@ export const ButtonRegister = styled(Button)`
 
 export const Container = styled.div<{ isVisible: boolean }>`
   width: 100%;
-  height: 100%;
+  height: 100dvh;
   background-color: rgba(0, 0, 0, 0.45);
 
-  position: absolute;
+  position: fixed;
   top: 64px;
   left: 0;
-  z-index: 8;
 
   display: ${(props) => (props.isVisible ? "block" : "none")};
+
+  z-index: 8;
+
+  transition: all 0.3s ease-in-out;
+
+  @media screen and (min-width: 750px) {
+    display: none;
+  }
 `;
