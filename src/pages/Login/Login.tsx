@@ -1,4 +1,3 @@
-import ImageLogin from "../../images/login.png";
 import Screen from "../../components/Screen/Screen";
 
 import useAuthentication from "../../hooks/useAuthentication";
@@ -57,7 +56,7 @@ const Login = () => {
         {contextHolder}
         <LoginContainer>
           <ImageContainer>
-            <Image src={ImageLogin} alt="Logo" />
+            <Image src="./images/login.png" alt="Logo" />
           </ImageContainer>
 
           <LoginContent>

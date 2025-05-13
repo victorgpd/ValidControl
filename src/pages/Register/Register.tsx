@@ -1,4 +1,3 @@
-import ImageRegister from "../../images/login.png";
 import Screen from "../../components/Screen/Screen";
 
 import useAuthentication from "../../hooks/useAuthentication";
@@ -58,7 +57,7 @@ const Register = () => {
       <RegisterPage>
         <RegisterContainer>
           <ImageContainer>
-            <Image src={ImageRegister} alt="Logo" />
+            <Image src="./images/login.png" alt="Logo" />
           </ImageContainer>
 
           <RegisterContent>
