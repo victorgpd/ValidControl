@@ -5,11 +5,14 @@ import {
   BarChartOutlined,
   DownOutlined,
   HomeOutlined,
+  InfoCircleOutlined,
+  LaptopOutlined,
   LoginOutlined,
   LogoutOutlined,
   MenuOutlined,
   PieChartOutlined,
   PlayCircleOutlined,
+  RocketOutlined,
   SettingOutlined,
   StarOutlined,
   UserAddOutlined,
@@ -37,7 +40,7 @@ import {
 import { useNotification } from "../../hooks/useNotification";
 import { useAppDispatch, useAppSelector } from "../../hooks/store";
 import useAuthentication from "../../hooks/useAuthentication";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { RoutesEnum } from "../../enums/routes";
 import { setOpenCurrentMenu, setSelectedLojaId } from "../../redux/globalReducer/slice";
 
@@ -57,22 +60,33 @@ const itemsAnchor = [
   {
     key: "home",
     href: "/validcontrol/#home",
-    title: "Home",
+    title: "Inicio",
   },
   {
-    key: "overview",
-    href: "/validcontrol/#overview",
-    title: "Visão geral",
+    key: "problems",
+    href: "/validcontrol/#problems",
+    title: "Soluções",
   },
   {
-    key: "vantages",
-    href: "/validcontrol/#vantages",
-    title: "Vantagens",
+    key: "features",
+    href: "/validcontrol/#features",
+    title: "Funcionalidades",
   },
   {
-    key: "use",
-    href: "/validcontrol/#use",
-    title: "Como usar",
+    key: "future-goals",
+    href: "/validcontrol/#future-goals",
+    title: "Objetivos",
+  },
+  {
+    key: "technologies",
+    href: "/validcontrol/#technologies",
+    title: "Tecnologias",
+  },
+
+  {
+    key: "about",
+    href: "/validcontrol/#about",
+    title: "Sobre",
   },
 ];
 
@@ -80,6 +94,7 @@ const Screen = ({ displayMenu, painel, text, children }: ScreenProps) => {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const topRef = useRef<HTMLDivElement>(null);
 
   const { contextHolder } = useNotification();
   const { logout, verifyLogged, isCheckingAuth } = useAuthentication();
@@ -88,6 +103,11 @@ const Screen = ({ displayMenu, painel, text, children }: ScreenProps) => {
   const [message, setMessage] = useState<string>("");
   const [openCurrent, setOpenCurrent] = useState<string[]>(openCurrentMenu);
   const [menuHomeIsVisible, setMenuHomeIsVisible] = useState<boolean>(false);
+  const [targetOffset, setTargetOffset] = useState<number>();
+
+  useEffect(() => {
+    setTargetOffset(topRef.current?.clientHeight! + 20);
+  }, []);
 
   const itemsUser: MenuProps["items"] = [
     {
@@ -124,32 +144,45 @@ const Screen = ({ displayMenu, painel, text, children }: ScreenProps) => {
   const dynamicItems: MenuItem[] = [
     {
       key: "1",
-      label: "Página Inicial",
+      label: "Navegação",
       type: "group",
       children: [
         {
           key: "home",
           icon: <HomeOutlined />,
-          label: "Home",
+          label: "Inicio",
           onClick: () => navigate(RoutesEnum.Home),
         },
         {
-          key: "overview",
+          key: "problems",
           icon: <BarChartOutlined />,
-          label: "Visão geral",
-          onClick: () => navigate("/#overview"),
+          label: "Soluções",
+          onClick: () => navigate("/#problems"),
         },
         {
-          key: "vantages",
+          key: "features",
           icon: <StarOutlined />,
-          label: "Vantagens",
-          onClick: () => navigate("/#vantages"),
+          label: "Funcionalidades",
+          onClick: () => navigate("/#features"),
         },
         {
-          key: "use",
-          icon: <PlayCircleOutlined />,
-          label: "Como usar",
-          onClick: () => navigate("/#use"),
+          key: "future-goals",
+          icon: <RocketOutlined />,
+          label: "Objetivos",
+          onClick: () => navigate("/#future-goals"),
+        },
+        {
+          key: "technologies",
+          icon: <LaptopOutlined />,
+          label: "Tecnologias",
+          onClick: () => navigate("/#technologies"),
+        },
+
+        {
+          key: "about",
+          icon: <InfoCircleOutlined />,
+          label: "Sobre",
+          onClick: () => navigate("/#about"),
         },
       ],
     },
@@ -247,7 +280,7 @@ const Screen = ({ displayMenu, painel, text, children }: ScreenProps) => {
 
   return (
     <>
-      <HeaderContainer>
+      <HeaderContainer ref={topRef}>
         <LogoContainer>
           {painel && (
             <ButtonMenu className="menu-painel" onClick={displayMenu}>
@@ -266,7 +299,7 @@ const Screen = ({ displayMenu, painel, text, children }: ScreenProps) => {
 
           {!painel && (
             <AnchorContainer>
-              <AnchorMenu direction="horizontal" items={itemsAnchor} style={{ color: "black" }} />
+              <AnchorMenu direction="horizontal" items={itemsAnchor} targetOffset={targetOffset} />
             </AnchorContainer>
           )}
 

@@ -34,7 +34,7 @@ export const LogoLink = styled(Link)`
   display: flex;
   align-items: center;
 
-  @media (max-width: 750px) {
+  @media (max-width: 900px) {
     margin-right: 20px;
   }
 `;
@@ -48,7 +48,7 @@ export const TitleLogo = styled.span`
 export const TitleSpan = styled.span`
   font-size: 20px;
 
-  @media (max-width: 750px) {
+  @media (max-width: 900px) {
     font-size: 16px;
   }
 `;
@@ -58,7 +58,7 @@ export const AnchorContainer = styled.div`
   align-items: center;
   gap: 16px;
 
-  @media (max-width: 750px) {
+  @media (max-width: 900px) {
     display: none;
   }
 `;
@@ -75,7 +75,7 @@ export const UserMenuContainer = styled.div`
   display: flex;
   align-items: center;
 
-  @media (max-width: 750px) {
+  @media (max-width: 400px) {
     display: none;
   }
 `;

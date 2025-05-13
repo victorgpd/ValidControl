@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const HomePage = styled.div`
   width: 100%;
   height: 100%;
-  padding: 0 20px;
+  padding: 20px;
 
   gap: 30px;
   display: flex;
