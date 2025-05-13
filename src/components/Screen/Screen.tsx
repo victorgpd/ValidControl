@@ -11,7 +11,6 @@ import {
   LogoutOutlined,
   MenuOutlined,
   PieChartOutlined,
-  PlayCircleOutlined,
   RocketOutlined,
   SettingOutlined,
   StarOutlined,
