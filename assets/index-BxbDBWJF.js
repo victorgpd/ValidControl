@@ -645,15 +645,22 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
   }
 `,FJe=Et.div`
   width: 100%;
-  height: 100%;
+  height: 100dvh;
   background-color: rgba(0, 0, 0, 0.45);
 
-  position: absolute;
+  position: fixed;
   top: 64px;
   left: 0;
-  z-index: 8;
 
   display: ${e=>e.isVisible?"block":"none"};
+
+  z-index: 8;
+
+  transition: all 0.3s ease-in-out;
+
+  @media screen and (min-width: 750px) {
+    display: none;
+  }
 `,$h=()=>{const[e,t]=zde.useNotification(),n=b.useCallback((r,i,a)=>{e[r]({message:i,description:a,placement:"topRight",duration:5,showProgress:!0})},[e]);return{contextHolder:t,showNotification:n}};var Fhe={exports:{}},jhe={};/**
  * @license React
  * use-sync-external-store-shim.production.js
