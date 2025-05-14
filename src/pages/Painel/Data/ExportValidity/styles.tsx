@@ -34,7 +34,6 @@ export const ContainerButton = styled.div`
   justify-content: center;
   gap: 15px;
   width: 100%;
-  margin-top: 24px;
 `;
 
 export const Button = styled.button`

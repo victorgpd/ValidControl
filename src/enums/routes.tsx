@@ -19,5 +19,6 @@ export enum RoutesEnum {
   Data_Export_Products = "/validcontrol/painel/data/export-products",
   Data_Export_Validitys = "/validcontrol/painel/data/export-validitys",
 
+  Logs = "/validcontrol/painel/logs",
   Configuration = "/validcontrol/painel/configuration",
 }

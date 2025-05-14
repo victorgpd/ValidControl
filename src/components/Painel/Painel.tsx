@@ -1,10 +1,10 @@
+import Screen from "../Screen/Screen";
+
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { MenuProps } from "antd";
-import { CalendarOutlined, DatabaseOutlined, LogoutOutlined, PieChartOutlined, SettingOutlined, ShoppingCartOutlined } from "@ant-design/icons";
-
-import Screen from "../Screen/Screen";
+import { CalendarOutlined, DatabaseOutlined, HistoryOutlined, LogoutOutlined, PieChartOutlined, SettingOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 
 import { useAppDispatch, useAppSelector } from "../../hooks/store";
 import { useRealtimeDocuments } from "../../hooks/useRealtimeDocuments";
@@ -93,6 +93,19 @@ const Painel = ({ children, title }: PainelProps) => {
       ],
     },
     {
+      key: "store",
+      label: "Loja",
+      type: "group",
+      children: [
+        {
+          key: "logs",
+          label: "Eventos",
+          icon: <HistoryOutlined />,
+          onClick: () => navigate(RoutesEnum.Logs),
+        },
+      ],
+    },
+    {
       key: "user",
       label: "Usuário",
       type: "group",
@@ -164,7 +177,20 @@ const Painel = ({ children, title }: PainelProps) => {
   }, [documents, dispatch, selectedLojaId]);
 
   useEffect(() => {
-    if (lojas && lojas.length > 0 && !selectedLojaId) {
+    const handler = (e: StorageEvent) => {
+      if (e.key == "selectedLojaId") {
+        dispatch(setSelectedLojaId(e.newValue));
+      }
+    };
+    window.addEventListener("storage", handler);
+    return () => window.removeEventListener("storage", handler);
+  }, []);
+
+  useEffect(() => {
+    const selectedStore = localStorage.getItem("selectedLojaId");
+    if (selectedStore) {
+      dispatch(setSelectedLojaId(selectedStore));
+    } else if (lojas && lojas.length > 0 && !selectedLojaId) {
       dispatch(setSelectedLojaId(lojas[0].idDocument || null));
     }
   }, [lojas, selectedLojaId]);
@@ -203,7 +229,8 @@ const Painel = ({ children, title }: PainelProps) => {
   }
 
   const handleChangeLoja = (value: string) => {
-    dispatch(setSelectedLojaId(value));
+    localStorage.setItem("selectedLojaId", value);
+    dispatch(setSelectedLojaId(value)); // adiciona isso!
     setIsVisible(false);
   };
 

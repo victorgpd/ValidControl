@@ -235,6 +235,16 @@ const Screen = ({ displayMenu, painel, text, children }: ScreenProps) => {
   }, []);
 
   useEffect(() => {
+    const handler = (e: StorageEvent) => {
+      if (e.key == "selectedLojaId") {
+        dispatch(setSelectedLojaId(e.newValue));
+      }
+    };
+    window.addEventListener("storage", handler);
+    return () => window.removeEventListener("storage", handler);
+  }, []);
+
+  useEffect(() => {
     const hour = new Date().getHours();
     let message = hour < 12 ? "Bom dia" : hour < 18 ? "Boa tarde" : "Boa noite";
 
@@ -265,7 +275,8 @@ const Screen = ({ displayMenu, painel, text, children }: ScreenProps) => {
   }
 
   const handleChangeLoja = (value: string) => {
-    dispatch(setSelectedLojaId(value));
+    localStorage.setItem("selectedLojaId", value);
+    dispatch(setSelectedLojaId(value)); // adiciona isso!
   };
 
   const handleClickMenu = (e: { keyPath: string[] }) => {
