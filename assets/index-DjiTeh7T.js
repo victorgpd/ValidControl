@@ -5190,8 +5190,7 @@ function print() { __p += __j.call(arguments, '') }
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: ${({direction:e})=>e};
-  gap: 30px;
-  margin-bottom: 30px;
+  gap: 10px;
 `,aGt=St.div`
   display: flex;
   justify-content: center;
@@ -5234,8 +5233,7 @@ function print() { __p += __j.call(arguments, '') }
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: ${({direction:e})=>e};
-  gap: 30px;
-  margin-bottom: 30px;
+  gap: 10px;
 `,uGt=St.div`
   display: flex;
   justify-content: center;
