@@ -5197,7 +5197,6 @@ function print() { __p += __j.call(arguments, '') }
   justify-content: center;
   gap: 15px;
   width: 100%;
-  margin-top: 24px;
 `,oGt=St.button`
   padding: 10px 20px;
   background-color: #10b981;
@@ -5242,7 +5241,6 @@ function print() { __p += __j.call(arguments, '') }
   justify-content: center;
   gap: 15px;
   width: 100%;
-  margin-top: 24px;
 `,fGt=St.button`
   padding: 10px 20px;
   background-color: #10b981;
