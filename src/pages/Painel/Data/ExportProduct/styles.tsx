@@ -25,8 +25,7 @@ export const Container = styled.div<ContainerProps>`
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: ${({ direction }) => direction};
-  gap: 30px;
-  margin-bottom: 30px;
+  gap: 10px;
 `;
 
 export const ContainerButton = styled.div`
